@@ -6,7 +6,7 @@ A reproducible, bank-format investment assessment of a slow pyrolysis plant that
 
 **[Read the full report (PDF)](Investment_Assessment_Biochar_Pyrolysis_Plant.pdf)**
 
-**[Open the live Investment Explorer](https://YOUR-GITHUB-USERNAME.github.io/biochar-investment-assessment/)**: move the biochar price, credit price, costs and financing and watch the return, value, payback and break-even update. It runs the same model in the browser and matches the Python results to the last digit shown.
+**[Open the live Investment Explorer](https://a-alay.github.io/biochar-investment-assessment/)**: move the biochar price, credit price, costs and financing and watch the return, value, payback and break-even update. It runs the same model in the browser and matches the Python results to the last digit shown.
 
 ## Headline results
 
