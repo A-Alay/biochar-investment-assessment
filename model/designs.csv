@@ -1,0 +1,17 @@
+site,technology,scenario,capital_musd,total_cost_per_t,reference
+Worden,Thermal,1,17.5,468,0
+Worden,Thermal,2,19.1,446,1
+Worden,Thermal,3,27.3,461,0
+Worden,Thermal,4,28.1,475,0
+Worden,Microwave,1,17.2,545,0
+Worden,Microwave,2,18.8,543,0
+Worden,Microwave,3,27.0,558,0
+Worden,Microwave,4,27.8,563,0
+Yreka,Thermal,1,17.3,515,0
+Yreka,Thermal,2,18.9,489,0
+Yreka,Thermal,3,27.1,507,0
+Yreka,Thermal,4,28.0,524,0
+Yreka,Microwave,1,17.0,646,0
+Yreka,Microwave,2,18.7,642,0
+Yreka,Microwave,3,26.9,658,0
+Yreka,Microwave,4,27.7,665,0

@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Investment Explorer · Forest-Residue Biochar Pyrolysis Plant</title>
+<meta name="description" content="Move the biochar price, credit price, costs and financing of a forest-residue slow pyrolysis plant and watch its return, value, payback and break-even update live. Built on a documented Python model by Ahmed Alayidi.">
+<meta name="author" content="Ahmed Alayidi">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Investment Explorer · Forest-Residue Biochar Pyrolysis Plant">
+<meta property="og:description" content="A live what-if dashboard for a biochar plant investment. Move one number and the whole investment case answers back.">
+<meta property="og:image" content="https://YOUR-GITHUB-USERNAME.github.io/biochar-investment-assessment/images/explorer-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { --cds-gap-xs:4px; --cds-gap-sm:8px; --cds-gap-md:12px; --cds-gap-lg:20px; --cds-pad-xs:4px; --cds-pad-sm:8px; --cds-pad-md:12px; --cds-pad-lg:16px; --cds-pad-xl:24px;
+    --cds-font-size-caption:12px; --cds-font-size-body:14px; --cds-font-size-heading:16px; --cds-font-size-title:28px; --cds-font-weight-medium:500; --cds-radius:8px;
+    --cds-ease-out:cubic-bezier(.2,.8,.2,1); --cds-dur-slow:.4s; --font-fallback-sans: system-ui, -apple-system, 'Segoe UI', sans-serif; --font-fallback-serif: Georgia, serif;
+    --cds-shadow-popover: 0 4px 12px rgba(0,0,0,.35); color-scheme: dark; }
+  html, body { margin: 0; background: #121A16; }
+  #dash-root { --dash-gutter: 0; }
+</style>
+<script src="d3.min.js"></script>
+<script>
+// Data published by model/model.py (inputs.csv, outputs/results.json), embedded so the page runs on its own.
+window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedstock processed at full capacity","value":"45360","unit":"dry t per year","status":"Sourced","source":"Sessions et al. 2019","location":"p. 177, Section 2.2.1 (plant definition)"},{"id":"yield","description":"Biochar yield on dry feedstock (thermal pyrolysis)","value":"0.36","unit":"fraction","status":"Sourced","source":"Sessions et al. 2019","location":"p. 178, Section 2.2.2 and Table 2"},{"id":"capex","description":"Capital cost: Worden OR site; thermal pyrolysis; Scenario 2 (heat recovery); includes engineering and 15% contingency","value":"19100000","unit":"USD","status":"Sourced","source":"Sessions et al. 2019","location":"p. 180, Table 5"},{"id":"capex_low","description":"Lowest capital cost across all sites; technologies and scenarios","value":"17000000","unit":"USD","status":"Sourced","source":"Sessions et al. 2019","location":"p. 180, Table 5 (Yreka, microwave, Scenario 1)"},{"id":"capex_high","description":"Highest capital cost across all sites; technologies and scenarios","value":"28100000","unit":"USD","status":"Sourced","source":"Sessions et al. 2019","location":"p. 180, Table 5 (Worden, thermal, Scenario 4)"},{"id":"feed_cost","description":"Delivered feedstock cost used for planning at Worden OR","value":"55","unit":"USD per dry t","status":"Sourced","source":"Sessions et al. 2019","location":"p. 181, Section 3.5"},{"id":"feed_cost_low","description":"Low end of collection and delivery cost to Worden OR","value":"43","unit":"USD per dry t","status":"Sourced","source":"Sessions et al. 2019","location":"p. 179, Section 3.1"},{"id":"feed_cost_high","description":"High end of collection and delivery cost to Worden OR","value":"135","unit":"USD per dry t","status":"Sourced","source":"Sessions et al. 2019","location":"p. 179, Section 3.1"},{"id":"prod_cost","description":"Direct biochar production cost: Worden; thermal; Scenario 2 (excludes feedstock and capital)","value":"207","unit":"USD per t biochar","status":"Sourced","source":"Sessions et al. 2019","location":"p. 182, Table 9"},{"id":"prod_cost_low","description":"Lowest direct production cost for thermal pyrolysis (Worden Scenario 3)","value":"184","unit":"USD per t biochar","status":"Sourced","source":"Sessions et al. 2019","location":"p. 182, Table 9"},{"id":"prod_cost_high","description":"Highest direct production cost for thermal pyrolysis (Yreka Scenario 1)","value":"254","unit":"USD per t biochar","status":"Sourced","source":"Sessions et al. 2019","location":"p. 182, Table 9"},{"id":"life","description":"Operating life","value":"20","unit":"years","status":"Sourced","source":"Sessions et al. 2019","location":"p. 182, Table 9 header"},{"id":"salvage_share","description":"Salvage value at end of life as share of capital","value":"0.20","unit":"fraction","status":"Sourced","source":"Sessions et al. 2019","location":"p. 182, Table 9 header"},{"id":"staff_fte","description":"Plant staff (Scenarios 1 and 2); cost is inside direct production cost","value":"26.5","unit":"FTE","status":"Sourced","source":"Sessions et al. 2019","location":"p. 181, Table 6"},{"id":"credit_price","description":"U.S. biochar carbon removal credit price for 2026 delivery","value":"148","unit":"USD per t CO2","status":"Sourced","source":"S&P Global (Oct. 2025), as reported by Carbon Credits, Dec. 3, 2025","location":"https://carboncredits.com/?p=39628, price section"},{"id":"char_price","description":"Biochar sale price","value":"500","unit":"USD per t","status":"Assumption","source":"None","location":"Context: 2014 survey average wholesale price $1,500 per t (Sessions et al. 2019, p. 183, Section 3.8)"},{"id":"char_price_low","description":"Biochar sale price for sensitivity: low","value":"250","unit":"USD per t","status":"Assumption","source":"None","location":""},{"id":"char_price_high","description":"Biochar sale price for sensitivity: high","value":"700","unit":"USD per t","status":"Assumption","source":"None","location":""},{"id":"credit_price_low","description":"Credit price for sensitivity: low","value":"80","unit":"USD per t CO2","status":"Assumption","source":"None","location":""},{"id":"credit_price_high","description":"Credit price for sensitivity: high","value":"220","unit":"USD per t CO2","status":"Assumption","source":"None","location":""},{"id":"co2_per_t","description":"CO2 credited per tonne of biochar","value":"2.5","unit":"t CO2 per t biochar","status":"Assumption","source":"None","location":"To be replaced by lab test and registry method"},{"id":"co2_per_t_low","description":"CO2 credited for sensitivity: low","value":"1.8","unit":"t CO2 per t biochar","status":"Assumption","source":"None","location":""},{"id":"co2_per_t_high","description":"CO2 credited for sensitivity: high","value":"3.0","unit":"t CO2 per t biochar","status":"Assumption","source":"None","location":""},{"id":"credit_fee","description":"Share of credit revenue lost to verification; registry and broker fees","value":"0.15","unit":"fraction","status":"Assumption","source":"None","location":""},{"id":"ramp_y1","description":"Capacity use in operating year 1","value":"0.60","unit":"fraction","status":"Assumption","source":"None","location":""},{"id":"ramp_y2","description":"Capacity use in operating year 2","value":"0.85","unit":"fraction","status":"Assumption","source":"None","location":""},{"id":"debt_share","description":"Debt share of project cost","value":"0.60","unit":"fraction","status":"Assumption","source":"None","location":"To be replaced by lender term sheet"},{"id":"debt_rate","description":"Nominal pre-tax cost of debt","value":"0.075","unit":"fraction","status":"Assumption","source":"None","location":"To be replaced by lender term sheet"},{"id":"equity_rate","description":"Nominal cost of equity","value":"0.15","unit":"fraction","status":"Assumption","source":"None","location":"To be replaced by sponsor hurdle rate"}],"model_results":[{"metric":"firr","measure":"Financial internal rate of return","value":"0.3375616732827862"},{"metric":"npv","measure":"Net present value at the cost of capital ($)","value":"38936501.12753669"},{"metric":"payback","measure":"Simple payback (years from start of operation)","value":"3.1222409147373513"},{"metric":"wacc","measure":"Weighted average cost of capital","value":"0.105"},{"metric":"be_char_credits","measure":"Break-even biochar price with credits ($ per t)","value":"192.1777991851668"},{"metric":"be_char_nocredits","measure":"Break-even biochar price without credits ($ per t)","value":"506.6777991851677"},{"metric":"be_credit","measure":"Break-even credit price ($ per t CO2)","value":"3.1424937341961585"},{"metric":"be_feed","measure":"Break-even feedstock cost ($ per dry t)","value":"165.81599229334017"},{"metric":"upside_npv","measure":"Upside scenario net present value ($)","value":"69355459.24801008"},{"metric":"nocredits_npv","measure":"No-credits scenario net present value ($)","value":"-844676.3580224367"},{"metric":"downside_npv","measure":"Downside scenario net present value ($)","value":"-22748274.877409093"}],"cash_flow":[{"year":"0","biochar_t":"0","char_sales":"0","credit_sales":"0","capital":"19100000.0","feedstock":"0","production":"0","salvage":"0","net":"-19100000.0"},{"year":"1","biochar_t":"9797.76","char_sales":"4898880.0","credit_sales":"3081395.52","capital":"0","feedstock":"1496880.0","production":"2028136.32","salvage":"0.0","net":"4455259.199999999"},{"year":"2","biochar_t":"13880.16","char_sales":"6940080.0","credit_sales":"4365310.32","capital":"0","feedstock":"2120580.0","production":"2873193.12","salvage":"0.0","net":"6311617.2"},{"year":"3","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"4","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"5","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"6","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"7","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"8","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"9","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"10","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"11","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"12","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"13","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"14","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"15","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"16","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"17","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"18","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"19","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"0.0","net":"7425432.0"},{"year":"20","biochar_t":"16329.599999999999","char_sales":"8164799.999999999","credit_sales":"5135659.2","capital":"0","feedstock":"2494800.0","production":"3380227.1999999997","salvage":"3820000.0","net":"11245432.0"}]};
+// Minimal runtime: hands the data to the page scripts and re-runs them on resize.
+(function () {
+  const subs = [], calcs = {}, D = window.EXPLORER_DATA;
+  window.dash = {
+    colors: ['#B7D1B3', '#C8892B', '#8FB58B', '#D9826B', '#7F8A82', '#A3ACA4', '#4E7A5A', '#E7ECE6'],
+    data: (id) => D[id] ? { status: 'ok', data: D[id] } : calcs[id] ? { status: 'ok', data: calcs[id].fn(...calcs[id].inputs.map((i) => D[i])) } : { status: 'missing', data: [] },
+    calc: (id, c) => { calcs[id] = c; },
+    onData: (fn) => { subs.push(fn); setTimeout(fn, 0); },
+    params: () => ({}), setParams() {}, resetParams() {}, refresh() {},
+    setLink: (name) => { try { history.replaceState(null, '', name && name !== 'overview' && name !== 'top' ? '#' + name : location.pathname); } catch (e) {} },
+  };
+  let w = window.innerWidth;
+  window.addEventListener('resize', () => { if (window.innerWidth !== w) { w = window.innerWidth; subs.forEach((f) => f()); } });
+})();
+</script>
+</head>
+<body>
+<div id="dash-root">
+<link rel="stylesheet" href="fonts.css">
+<style>
+  /* Layout: one screen. Title row, tab row, then inputs on the left and the chosen view on the right. Every block shares one card style and one right edge. */
+  #dash-root { --dash-gutter: 0; }
+  .bx {
+    --forest: #1F3A2E; --ember: #C8892B; --moss: #4E7A5A; --sage: #8FAE8B; --rust: #C0634B;
+    --ink: #22262A; --muted: #6B7178; --head2: #9AA39C; --tile: #F2F5F1; --cream: #FAF4E8; --rule: #DFE4DE; --thead: #EEF2ED;
+    --paper: #FFFFFF; --you: #1F3A2E; --dark-box: #1F3A2E; --on-dark: #FFFFFF; --on-dark-muted: #C8D6C6;
+    --ok-bg: #E3EEE1; --ok-fg: #2F5C3F; --bad-bg: #F6E1DA; --bad-fg: #9C3F2A; --na-bg: #ECEDEB; --na-fg: #6B7178;
+    --sans: 'Report Sans', var(--font-fallback-sans); --serif: 'Report Serif', var(--font-fallback-serif);
+    --acc: var(--forest); --gap: 12px; --pad: 14px;
+    --ink: #E7ECE6; --muted: #A3ACA4; --head2: #7F8A82; --tile: #1A2520; --cream: #2A2519; --rule: #2F3B34; --thead: #1F2B25;
+    --paper: #121A16; --you: #B7D1B3; --dark-box: #24433A; --sage: #6F9A6B; --moss: #8FB58B; --rust: #D9826B;
+    --ok-bg: #22392B; --ok-fg: #A9D3AE; --bad-bg: #3D231C; --bad-fg: #F0A893; --na-bg: #252C28; --na-fg: #A3ACA4; --acc: #B7D1B3;
+    --forest: #4E7A5A; color-scheme: dark;
+  }
+  .bx, .bx * { box-sizing: border-box; }
+  .bx { font-family: var(--sans); color: var(--ink); background: var(--paper); padding-inline: clamp(12px, 2vw, 24px); display: grid;
+        grid-template-rows: auto minmax(0, 1fr); gap: var(--gap); padding-block: 8px 12px; min-height: 0; }
+  .bx.fit { height: var(--fit-h, auto); overflow: hidden; }
+  .bx p.j, .bx .j { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+
+  /* 1. Title row: name on the left, case picker flush right */
+  .bx-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 8px 20px; border-bottom: 2px solid var(--ember); padding-bottom: 8px; }
+  .bx-eyebrow { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--ember); font-weight: 600; }
+  .bx-title { font-family: var(--serif); font-weight: 400; font-size: clamp(1.2rem, 2vw, 1.6rem); line-height: 1.2; margin: 3px 0 0; }
+  .bx-title .a { color: var(--ember); } .bx-title .b { color: var(--head2); }
+  .bx-presets { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: flex-end; margin-left: auto; }
+  .bx-presets span { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+  .bx-chip { font: inherit; font-size: 13px; padding: .4em .95em; border-radius: 2px; cursor: pointer; border: 1px solid var(--rule); background: var(--tile); color: var(--ink); }
+  .bx-chip:hover { border-color: var(--ember); }
+  .bx-chip[aria-pressed="true"] { background: var(--dark-box); border-color: var(--dark-box); color: var(--on-dark); font-weight: 600; }
+
+  /* 2. Tab row: the only way between views; Overview is always first */
+  .bx-tabs { display: grid; grid-template-columns: var(--rail) minmax(0, 1fr); gap: var(--gap); align-items: end; }
+  .bx-tabs .lbl { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; }
+  .bx-stage { min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: var(--gap); }
+  .bx-tablist { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-bottom: 1px solid var(--rule); }
+  .bx-tab { font: inherit; font-size: 13.5px; cursor: pointer; padding: 8px 6px 9px; border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px; background: none; color: var(--muted); display: flex; gap: 7px; justify-content: center; align-items: baseline; white-space: nowrap; }
+  .bx-tab .n { font-family: var(--serif); color: var(--ember); font-size: 12px; }
+  .bx-tab:hover { color: var(--ink); background: var(--tile); }
+  .bx-tab[aria-selected="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--ember); }
+
+  /* 3. Body: inputs rail and the view, both run to the same bottom edge */
+  .bx { --rail: 17.5rem; }
+  .bx-main { display: grid; grid-template-columns: var(--rail) minmax(0, 1fr); gap: var(--gap); min-height: 0; }
+  .bx-card { background: var(--tile); border-top: 3px solid var(--ember); padding: 10px var(--pad) 12px; min-width: 0; min-height: 0; }
+  .bx-card.dark { background: var(--dark-box); color: var(--on-dark); }
+  .bx-cardhead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .bx-card h2, .bx-card h3 { font-size: 14px; font-weight: 600; margin: 0; line-height: 1.3; }
+  .bx-card .sub { font-size: 11.5px; color: var(--muted); margin: 3px 0 0; line-height: 1.4; }
+  .bx-more { font: inherit; font-size: 12px; font-weight: 600; white-space: nowrap; background: none; color: var(--ember); border: 0; padding: 0; cursor: pointer; }
+  .bx-more::after { content: " →"; }
+  .bx-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  .bx-controls { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 6px; overflow: hidden; }
+  .bx-controls h2 { font-family: var(--serif); font-weight: 400; font-size: 1.05rem; }
+  #sliders { display: grid; gap: 4px; align-content: start; overflow: auto; min-height: 0; padding-right: 2px; }
+  .bx-group { display: grid; gap: 4px; border: 0; padding: 6px 0 0; margin: 0; min-width: 0; border-top: 1px solid var(--rule); }
+  .bx-group legend { float: left; width: 100%; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--ember); font-weight: 600; padding: 0; margin-bottom: 2px; }
+  .bx-field { display: grid; grid-template-columns: minmax(0, 1fr) auto 4.4em; gap: 0 8px; clear: both; align-items: baseline; }
+  .bx-field label { font-size: 13px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bx-field label small { color: var(--muted); font-size: 10.5px; }
+  .bx-field output { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; text-align: right; font-size: 13px; }
+  .bx-field output.moved { color: var(--ember); }
+  .bx-colhead { display: grid; grid-template-columns: minmax(0, 1fr) auto 4.4em; gap: 0 8px; margin-top: 6px; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .bx-colhead span:not(:first-child) { text-align: right; }
+  .bx-field .base { font-size: 11px; color: var(--muted); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .bx-field input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--acc); margin: 1px 0 0; height: 16px; }
+  .bx-field input[type=range]:disabled { opacity: .4; }
+  .bx-toggle { display: flex; justify-content: space-between; gap: 8px; align-items: center; font-size: 13px; cursor: pointer; clear: both; }
+  .bx-toggle input { accent-color: var(--acc); width: 15px; height: 15px; margin: 0; }
+  .bx-reset { font: inherit; font-size: 12.5px; font-weight: 600; background: var(--paper); border: 1px solid var(--rule); color: var(--ink); cursor: pointer; padding: 6px 10px; border-radius: 2px; width: 100%; }
+  .bx-reset:hover { border-color: var(--ember); }
+
+  .bx-view { min-height: 0; display: grid; gap: var(--gap); }
+  .bx-view[hidden] { display: none; }
+  #v-overview { grid-template-rows: auto auto minmax(0, 1fr) auto; }
+  .bx-verdict { background: var(--cream); border-top: 3px solid var(--ember); padding: 9px var(--pad); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .bx-take { font-family: var(--serif); font-size: 15px; line-height: 1.45; margin: 0; color: var(--ink); }
+  .bx-take b { font-weight: 700; white-space: nowrap; }
+  .bx-pill { display: inline-flex; align-items: center; padding: .22em .75em; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .bx-pill.ok { background: var(--ok-bg); color: var(--ok-fg); } .bx-pill.bad { background: var(--bad-bg); color: var(--bad-fg); }
+
+  .bx-grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); }
+  .bx-tile { display: grid; gap: 2px; align-content: start; }
+  .bx-tile .k { font-size: 11.5px; color: var(--muted); line-height: 1.3; min-height: 2.6em; }
+  .bx-tile .v { font-family: var(--serif); font-weight: 400; font-size: clamp(1.3rem, 2vw, 1.75rem); line-height: 1.15; font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+  .bx-tile .foot { display: flex; justify-content: space-between; gap: 8px; font-size: 11.5px; font-variant-numeric: tabular-nums; border-top: 1px solid var(--rule); padding-top: 4px; margin-top: 3px; }
+  .bx-tile .d { font-weight: 600; }
+  .bx-tile .r { color: var(--muted); text-align: right; }
+  .bx-tile .d .up { color: var(--ok-fg); } .bx-tile .d .down { color: var(--bad-fg); } .bx-tile .d .flat { color: var(--muted); font-weight: 400; }
+  .bx-card.dark .k, .bx-card.dark .r { color: var(--on-dark-muted); }
+  .bx-card.dark .foot { border-top-color: rgba(255,255,255,.18); }
+  .bx-card.dark .d .up { color: #A9D3AE; } .bx-card.dark .d .down { color: #F0A893; } .bx-card.dark .d .flat { color: var(--on-dark-muted); }
+  .bx-tile .v.pulse { animation: bxPulse .6s var(--cds-ease-out); }
+
+  .bx-grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); min-height: 0; }
+  .bx-chartcard { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; }
+  .bx-fig { display: grid; grid-template-columns: 14px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 8px; margin-top: 6px; min-height: 0; }
+  .bx-fig .tag { border-left: 2px solid var(--ember); writing-mode: vertical-rl; transform: rotate(180deg); font-size: 9px; letter-spacing: .25em; text-transform: uppercase; color: var(--ember); font-weight: 600; padding: 4px 2px 0 0; text-align: right; }
+  .bx-chart { position: relative; min-height: 0; overflow: hidden; }
+  .bx-chart svg { display: block; position: absolute; left: 0; top: 0; }
+  .bx-chart text { font-family: var(--sans); }
+  .bx-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 14px; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+  .bx-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+  .bx-tip { position: absolute; pointer-events: none; background: var(--paper); border: 1px solid var(--rule); border-top: 2px solid var(--ember); box-shadow: var(--cds-shadow-popover);
+            padding: 4px 8px; font-size: 12px; white-space: nowrap; z-index: 3; color: var(--ink); }
+  .bx-tip .h { color: var(--muted); margin-bottom: 2px; }
+  .bx-tip .s { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+
+  .bx-condrow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+  .bx-cond { font: inherit; text-align: left; cursor: pointer; border: 0; border-left: 3px solid var(--na-fg); border-radius: 2px; padding: 6px 10px; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; gap: 0 8px; align-items: baseline; background: var(--paper); color: var(--ink); font-size: 12.5px; }
+  .bx-cond.ok { border-left-color: var(--ok-fg); } .bx-cond.bad { border-left-color: var(--bad-fg); }
+  .bx-cond .n { grid-row: 1 / 3; align-self: center; }
+  .bx-cond .n { font-family: var(--serif); color: var(--ember); font-size: 15px; }
+  .bx-cond .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bx-cond .s { font-size: 11.5px; font-weight: 600; white-space: nowrap; background: none !important; padding: 0; }
+  .bx-cond.ok .s { color: var(--ok-fg); } .bx-cond.bad .s { color: var(--bad-fg); } .bx-cond.na .s { color: var(--na-fg); }
+  .bx-cond:hover { outline: 1px solid var(--ember); }
+  .s.ok { background: var(--ok-bg); color: var(--ok-fg); } .s.bad { background: var(--bad-bg); color: var(--bad-fg); } .s.na { background: var(--na-bg); color: var(--na-fg); font-weight: 400; }
+
+  /* Detail views: same card, title row, body, caption */
+  .bx-detail { grid-template-rows: minmax(0, 1fr); }
+  .bx-detail > .bx-card { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 8px; }
+  .bx-detail h3 { font-family: var(--serif); font-weight: 400; font-size: 1.25rem; color: var(--ember); }
+  .bx-detail h3 span { color: var(--head2); }
+  .bx-detail .sub { font-size: 12.5px; max-width: 80ch; }
+  .bx-back { font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 2px; border: 0; background: var(--dark-box); color: var(--on-dark); white-space: nowrap; }
+  .bx-cap { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.45; padding-top: 6px; border-top: 1px solid var(--rule); }
+  .bx-cap b { color: var(--ink); font-weight: 600; }
+  .bx-scroll { overflow: auto; min-height: 0; background: var(--paper); }
+  .bx-conds { list-style: none; margin: 0; padding: 0 12px; display: grid; align-content: start; }
+  .bx-conds li { display: grid; grid-template-columns: 2rem minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: .65rem 0; border-top: 1px solid var(--rule); }
+  .bx-conds li:first-child { border-top: 0; }
+  .bx-conds .n { font-family: var(--serif); color: var(--ember); font-size: 1.35rem; line-height: 1; }
+  .bx-conds .t { line-height: 1.45; } .bx-conds .t small { display: block; color: var(--muted); font-size: 12px; }
+  .bx-conds .s { font-size: 12px; font-weight: 600; white-space: nowrap; padding: .2em .7em; border-radius: 999px; text-align: right; }
+  .bx-gate { background: var(--dark-box); color: var(--on-dark); padding: 10px 16px; }
+  .bx-gate .l { font-size: 10.5px; letter-spacing: .25em; text-transform: uppercase; color: var(--ember); font-weight: 600; margin-bottom: 3px; }
+  .bx-gate p { margin: 0; line-height: 1.5; font-size: 13.5px; }
+  .bx table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--ink); font-family: var(--sans); }
+  .bx th, .bx td { padding: .42rem .7rem; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  .bx thead th { position: sticky; top: 0; font-weight: 600; color: var(--ink); background: var(--thead); border-top: 2px solid var(--forest); border-bottom: 1px solid var(--forest); z-index: 1; }
+  .bx th:first-child, .bx td:first-child { text-align: left; white-space: normal; }
+  .bx tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--tile) 55%, transparent); }
+  .bx-checkline.ok { color: var(--ok-fg); font-weight: 600; }
+
+  .bx :focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
+  .bx [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+  .bx [data-dash-source-state=empty] { color: transparent; }
+  .bx-fail { display: flex; align-items: center; justify-content: center; gap: .5rem; height: 100%; min-height: 120px; color: var(--muted); font-size: 12px; }
+  .bx-fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--rust); }
+
+  @keyframes bxPulse { 0% { color: var(--ember); } 100% { } }
+  @keyframes bxRise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes bxDraw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
+  @keyframes bxFade { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: no-preference) {
+    .bx.ready #v-overview .bx-card, .bx.ready .bx-verdict { animation: bxRise .45s var(--cds-ease-out) both; }
+    .bx path.draw { stroke-dasharray: var(--len); animation: bxDraw .9s var(--cds-ease-out) both; }
+    .bx-view:not([hidden]) { animation: bxFade .2s ease-out both; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bx-tile .v.pulse { animation: none; } }
+
+  /* Narrow screens: one column that scrolls; tabs wrap */
+  @media (max-width: 899px) {
+    .bx.fit { height: auto; overflow: visible; }
+    .bx-main { grid-template-columns: minmax(0, 1fr); }
+    .bx-tablist { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .bx-controls { overflow: visible; } #sliders { overflow: visible; }
+    .bx-grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bx-grid2 { grid-template-columns: minmax(0, 1fr); }
+    .bx-condrow { grid-template-columns: minmax(0, 1fr); }
+    .bx-chart { height: 240px; }
+    .bx-detail .bx-chart { height: 300px; }
+    .bx-scroll { max-height: 70vh; }
+  }
+</style>
+
+<div class="bx" id="explorer">
+  <header class="bx-head" id="top">
+    <div>
+      <div class="bx-eyebrow">Investment assessment · What-if explorer</div>
+      <h1 class="bx-title"><span class="a">Explorer</span> <span class="b">| Forest-Residue Biochar Pyrolysis Plant</span></h1>
+    </div>
+    <div class="bx-presets" role="group" aria-label="Start from a case">
+      <span>Start from</span>
+      <button class="bx-chip" type="button" data-preset="base" aria-pressed="true">Report case</button>
+      <button class="bx-chip" type="button" data-preset="upside" aria-pressed="false">Upside</button>
+      <button class="bx-chip" type="button" data-preset="nocredits" aria-pressed="false">No credits sold</button>
+      <button class="bx-chip" type="button" data-preset="downside" aria-pressed="false">Downside</button>
+    </div>
+  </header>
+
+
+  <div class="bx-main">
+    <aside class="bx-card bx-controls" id="controls" data-source="inputs">
+      <div><h2>Your case</h2><p class="sub">Move any input; every figure updates at once.</p><div class="bx-colhead"><span>Input</span><span>Report</span><span>Yours</span></div></div>
+      <div id="sliders"></div>
+      <button class="bx-reset" type="button" id="reset">Reset to the report case</button>
+    </aside>
+
+    <div class="bx-stage" id="stage">
+    <div class="bx-tablist" role="tablist">
+        <button class="bx-tab" type="button" role="tab" data-tab="overview" aria-selected="true">Overview</button>
+        <button class="bx-tab" type="button" role="tab" data-tab="cum" aria-selected="false">Cash by year</button>
+        <button class="bx-tab" type="button" role="tab" data-tab="price" aria-selected="false">Value by price</button>
+        <button class="bx-tab" type="button" role="tab" data-tab="cond" aria-selected="false">Conditions</button>
+        <button class="bx-tab" type="button" role="tab" data-tab="table" aria-selected="false">Year by year</button>
+        <button class="bx-tab" type="button" role="tab" data-tab="check" aria-selected="false">Model check</button>
+      </div>
+
+      <section class="bx-view" id="v-overview" role="tabpanel">
+        <div class="bx-verdict"><p class="bx-take dash-skeleton" id="takeaway">—</p><span class="bx-pill" id="verdict-pill"></span></div>
+
+        <div class="bx-grid4" id="tiles" aria-label="Results for your case">
+          <div class="bx-card dark bx-tile" id="tile-firr">
+            <div class="k">Return on the project</div>
+            <div class="v" id="v-firr">—</div>
+            <div class="foot"><span class="d" id="d-firr"></span><span class="r">Report <span data-source="model_results" data-field="value" data-where="metric=firr" id="r-firr">—</span></span></div>
+          </div>
+          <div class="bx-card bx-tile" id="tile-npv">
+            <div class="k">Value today at the cost of capital</div>
+            <div class="v" id="v-npv">—</div>
+            <div class="foot"><span class="d" id="d-npv"></span><span class="r">Report <span data-source="model_results" data-field="value" data-where="metric=npv" id="r-npv">—</span></span></div>
+          </div>
+          <div class="bx-card bx-tile" id="tile-pb">
+            <div class="k">Payback from start of operation</div>
+            <div class="v" id="v-pb">—</div>
+            <div class="foot"><span class="d" id="d-pb"></span><span class="r">Report <span data-source="model_results" data-field="value" data-where="metric=payback" id="r-pb">—</span></span></div>
+          </div>
+          <div class="bx-card bx-tile" id="tile-be">
+            <div class="k">Biochar price below which value turns negative</div>
+            <div class="v" id="v-be">—</div>
+            <div class="foot"><span class="d" id="d-be"></span><span class="r">Report <span data-source="model_results" data-field="value" data-where="metric=be_char_credits" id="r-be">—</span></span></div>
+          </div>
+        </div>
+
+        <div class="bx-grid2">
+          <section class="bx-card bx-chartcard" id="cum-card">
+            <div class="bx-cardhead"><h2>Cash in the bank, year by year</h2><button class="bx-more" type="button" data-go="cum">Full view</button></div>
+            <div class="bx-fig"><div class="tag">Figure 1</div><div class="bx-chart" id="cum-chart" data-source="cash_flow"></div></div>
+            <div class="bx-legend" id="cum-legend"></div>
+          </section>
+          <section class="bx-card bx-chartcard" id="price-card">
+            <div class="bx-cardhead"><h2>Value at each biochar price</h2><button class="bx-more" type="button" data-go="price">Full view</button></div>
+            <div class="bx-fig"><div class="tag">Figure 2</div><div class="bx-chart" id="price-chart"></div></div>
+            <div class="bx-legend" id="price-legend"></div>
+          </section>
+        </div>
+
+        <section class="bx-card" id="cond-card">
+          <div class="bx-cardhead"><h2>Five conditions before construction money is committed</h2><button class="bx-more" type="button" data-go="cond">Details</button></div>
+          <div class="bx-condrow" id="cond-mini"></div>
+        </section>
+      </section>
+
+      <section class="bx-view bx-detail" id="v-cum" role="tabpanel" hidden>
+        <div class="bx-card">
+          <div class="bx-cardhead"><div><h3>Figure 1 <span>| Cash in the bank, year by year</span></h3>
+            <p class="sub j">Running total of the plant's pre-tax cash after paying for it in year 0. Green bars are your case, red bars are years still below zero, and the amber line is the report case from the Python model.</p></div>
+            <button class="bx-back" type="button" data-go="overview">← Overview</button></div>
+          <div class="bx-chart" id="cum-chart-big"></div>
+          <p class="bx-cap j"><b>Figure 1.</b> Cumulative pre-tax project cash flow. Year 20 includes the salvage value of the plant. Source: model run.</p>
+        </div>
+      </section>
+
+      <section class="bx-view bx-detail" id="v-price" role="tabpanel" hidden>
+        <div class="bx-card">
+          <div class="bx-cardhead"><div><h3>Figure 2 <span>| Value at each biochar price</span></h3>
+            <p class="sub j">Net present value at your cost of capital across biochar prices, with all your other inputs held. Above zero, the plant pays more than its money costs. Circles mark the break-even prices.</p></div>
+            <button class="bx-back" type="button" data-go="overview">← Overview</button></div>
+          <div class="bx-chart" id="price-chart-big"></div>
+          <p class="bx-cap j" id="price-cap"><b>Figure 2.</b> Net present value at the cost of capital across biochar prices. Source: model run.</p>
+        </div>
+      </section>
+
+      <section class="bx-view bx-detail" id="v-cond" role="tabpanel" hidden>
+        <div class="bx-card">
+          <div class="bx-cardhead"><div><h3>Section 13 <span>| Five conditions, tested on your case</span></h3>
+            <p class="sub j">The report asks for these before construction money is committed.</p></div>
+            <button class="bx-back" type="button" data-go="overview">← Overview</button></div>
+          <div class="bx-scroll"><ul class="bx-conds" id="cond-list"></ul></div>
+          <div class="bx-gate"><div class="l">If a condition fails</div><p><b>Re-run this assessment</b> with the new figures before committing the capital to the project.</p></div>
+        </div>
+      </section>
+
+      <section class="bx-view bx-detail" id="v-table" role="tabpanel" hidden>
+        <div class="bx-card">
+          <div class="bx-cardhead"><div><h3>Cash flow <span>| Your case, year by year ($ thousand)</span></h3>
+            <p class="sub j">Year 0 is construction. Credit sales are net of fees. Year 20 adds the salvage value of the plant. Negative figures are in brackets.</p></div>
+            <button class="bx-back" type="button" data-go="overview">← Overview</button></div>
+          <div class="bx-scroll"><table id="cf-table"><thead></thead><tbody></tbody></table></div>
+          <p class="bx-cap j">Source: model run on your inputs.</p>
+        </div>
+      </section>
+
+      <section class="bx-view bx-detail" id="v-check" role="tabpanel" hidden>
+        <div class="bx-card">
+          <div class="bx-cardhead"><div><h3>Model check <span>| Same numbers as the Python model</span></h3>
+            <p class="sub j">This page runs the report's model in the browser. At the report's inputs it has to land on the figures the Python model published.</p></div>
+            <button class="bx-back" type="button" data-go="overview">← Overview</button></div>
+          <div class="bx-scroll">
+            <table id="check-table" data-source="model_results" data-row-key="metric">
+              <thead><tr><th data-field="measure">Measure</th><th data-field="value">Python model</th><th data-source="page_check" data-field="value">This page</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="bx-cap bx-checkline" id="check-line"></p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+dash.calc('page_check', {
+  inputs: ['inputs'],
+  title: 'Model rerun in this page',
+  description: 'The report model run in the browser on the input register, at the report inputs.',
+  fn: (inputs) => {
+    // Same steps as model/model.py: year 0 build, years 1 to life operate, flat prices, pre-tax.
+    const wacc = (p) => p.debt_share * p.debt_rate + (1 - p.debt_share) * p.equity_rate;
+    const npvAt = (rate, flows) => flows.reduce((s, f, t) => s + f / Math.pow(1 + rate, t), 0);
+    const cashFlows = (p, creditOn) => {
+      const rows = [{ year: 0, biochar_t: 0, char_sales: 0, credit_sales: 0, capital: p.capex, feedstock: 0, production: 0, salvage: 0, net: -p.capex }];
+      for (let t = 1; t <= p.life; t++) {
+        const use = t === 1 ? p.ramp_y1 : t === 2 ? p.ramp_y2 : 1;
+        const feed = p.feed_tonnes * use;
+        const char_t = feed * p.yield;
+        const char_sales = char_t * p.char_price;
+        const credit_sales = creditOn ? char_t * p.co2_per_t * p.credit_price * (1 - p.credit_fee) : 0;
+        const feedstock = feed * p.feed_cost;
+        const production = char_t * p.prod_cost;
+        const salvage = t === p.life ? p.salvage_share * p.capex : 0;
+        rows.push({ year: t, biochar_t: char_t, char_sales, credit_sales, capital: 0, feedstock, production, salvage,
+                    net: char_sales + credit_sales - feedstock - production + salvage });
+      }
+      return rows;
+    };
+    const irr = (flows) => {
+      let lo = -0.95, hi = 10, flo = npvAt(lo, flows), fhi = npvAt(hi, flows);
+      if (!(flo * fhi < 0)) return null;
+      for (let i = 0; i < 200; i++) {
+        const mid = (lo + hi) / 2, fm = npvAt(mid, flows);
+        if (flo * fm <= 0) { hi = mid; } else { lo = mid; flo = fm; }
+      }
+      return (lo + hi) / 2;
+    };
+    const payback = (flows) => {
+      let cum = flows[0];
+      for (let i = 1; i < flows.length; i++) {
+        const next = cum + flows[i];
+        if (next >= 0) return (i - 1) + (-cum) / flows[i];
+        cum = next;
+      }
+      return null;
+    };
+    const evaluate = (p, creditOn) => {
+      const rows = cashFlows(p, creditOn);
+      const flows = rows.map((r) => r.net);
+      const rate = wacc(p);
+      return { rows, flows, wacc: rate, npv: npvAt(rate, flows), firr: irr(flows), payback: payback(flows) };
+    };
+    // Net present value is a straight line in each price, so two runs give the exact break-even.
+    const breakEven = (p, key, creditOn) => {
+      const a = evaluate({ ...p, [key]: 0 }, creditOn).npv, b = evaluate({ ...p, [key]: 1000 }, creditOn).npv;
+      return b === a ? null : -a * 1000 / (b - a);
+    };
+    const p = Object.fromEntries(inputs.map((r) => [r.id, Number(r.value)]));
+    const base = evaluate(p, true), none = evaluate(p, false);
+    const up = evaluate({ ...p, char_price: 600, credit_price: 180, capex: p.capex_low, prod_cost: p.prod_cost_low, feed_cost: p.feed_cost_low }, true);
+    const down = evaluate({ ...p, char_price: 300, credit_price: 100, capex: p.capex_high, prod_cost: p.prod_cost_high, feed_cost: 80 }, true);
+    return [
+      { metric: 'firr', value: base.firr }, { metric: 'npv', value: base.npv }, { metric: 'payback', value: base.payback },
+      { metric: 'wacc', value: base.wacc },
+      { metric: 'be_char_credits', value: breakEven(p, 'char_price', true) },
+      { metric: 'be_char_nocredits', value: breakEven(p, 'char_price', false) },
+      { metric: 'be_credit', value: breakEven(p, 'credit_price', true) },
+      { metric: 'be_feed', value: breakEven(p, 'feed_cost', true) },
+      { metric: 'upside_npv', value: up.npv }, { metric: 'nocredits_npv', value: none.npv }, { metric: 'downside_npv', value: down.npv },
+    ];
+  },
+});
+</script>
+
+<script>
+(() => {
+  // Same steps as model/model.py: year 0 build, years 1 to life operate, flat prices, pre-tax.
+  const wacc = (p) => p.debt_share * p.debt_rate + (1 - p.debt_share) * p.equity_rate;
+  const npvAt = (rate, flows) => flows.reduce((s, f, t) => s + f / Math.pow(1 + rate, t), 0);
+  const cashFlows = (p, creditOn) => {
+    const rows = [{ year: 0, biochar_t: 0, char_sales: 0, credit_sales: 0, capital: p.capex, feedstock: 0, production: 0, salvage: 0, net: -p.capex }];
+    for (let t = 1; t <= p.life; t++) {
+      const use = t === 1 ? p.ramp_y1 : t === 2 ? p.ramp_y2 : 1;
+      const feed = p.feed_tonnes * use;
+      const char_t = feed * p.yield;
+      const char_sales = char_t * p.char_price;
+      const credit_sales = creditOn ? char_t * p.co2_per_t * p.credit_price * (1 - p.credit_fee) : 0;
+      const feedstock = feed * p.feed_cost;
+      const production = char_t * p.prod_cost;
+      const salvage = t === p.life ? p.salvage_share * p.capex : 0;
+      rows.push({ year: t, biochar_t: char_t, char_sales, credit_sales, capital: 0, feedstock, production, salvage,
+                  net: char_sales + credit_sales - feedstock - production + salvage });
+    }
+    return rows;
+  };
+  const irr = (flows) => {
+    let lo = -0.95, hi = 10, flo = npvAt(lo, flows), fhi = npvAt(hi, flows);
+    if (!(flo * fhi < 0)) return null;
+    for (let i = 0; i < 200; i++) {
+      const mid = (lo + hi) / 2, fm = npvAt(mid, flows);
+      if (flo * fm <= 0) { hi = mid; } else { lo = mid; flo = fm; }
+    }
+    return (lo + hi) / 2;
+  };
+  const payback = (flows) => {
+    let cum = flows[0];
+    for (let i = 1; i < flows.length; i++) {
+      const next = cum + flows[i];
+      if (next >= 0) return (i - 1) + (-cum) / flows[i];
+      cum = next;
+    }
+    return null;
+  };
+  const evaluate = (p, creditOn) => {
+    const rows = cashFlows(p, creditOn);
+    const flows = rows.map((r) => r.net);
+    const rate = wacc(p);
+    return { rows, flows, wacc: rate, npv: npvAt(rate, flows), firr: irr(flows), payback: payback(flows) };
+  };
+  // Net present value is a straight line in each price, so two runs give the exact break-even.
+  const breakEven = (p, key, creditOn) => {
+    const a = evaluate({ ...p, [key]: 0 }, creditOn).npv, b = evaluate({ ...p, [key]: 1000 }, creditOn).npv;
+    return b === a ? null : -a * 1000 / (b - a);
+  };
+  const root = document.getElementById('explorer');
+  const fmtAx = (v) => (v < 0 ? '−' : '') + '$' + (Math.abs(v) / 1e6).toFixed(Math.abs(v) >= 1e7 || v === 0 ? 0 : 1) + 'M';
+  const fmtM = (v) => (v < 0 ? '−' : '') + '$' + (Math.abs(v) / 1e6).toFixed(1) + 'M';
+  const fmtPct = (v) => v == null ? 'Not reached' : (v < 0 ? '−' : '') + (Math.abs(v) * 100).toFixed(1) + '%';
+  const fmtYrs = (v) => v == null ? 'Not reached' : v.toFixed(1) + ' years';
+  const fmtUsd = (v) => v == null ? 'None' : (v < 0 ? '−' : '') + '$' + Math.round(Math.abs(v)).toLocaleString('en');
+  const fmtK = (v) => { const r = Math.round(v / 1000) || 0; return r < 0 ? '(' + Math.abs(r).toLocaleString('en') + ')' : r.toLocaleString('en'); };
+
+  const FIELDS = [
+    { group: 'What the plant sells', id: 'char_price', label: 'Biochar price', unit: '$ per t', min: 100, max: 900, step: 10, show: (v) => '$' + v + '/t' },
+    { group: 'What the plant sells', id: 'credit_price', label: 'Credit price, CO2', unit: '$ per t CO2', min: 0, max: 300, step: 2, show: (v) => '$' + v + '/t' },
+    { group: 'What the plant sells', id: 'co2_per_t', label: 'CO2 per t biochar', unit: 't per t biochar', min: 1.2, max: 3.5, step: 0.1, show: (v) => v.toFixed(1) + ' t' },
+    { group: 'What the plant pays', id: 'capex', label: 'Cost to build', unit: '$ million', min: 12e6, max: 40e6, step: 0.1e6, show: (v) => '$' + (v / 1e6).toFixed(1) + 'M' },
+    { group: 'What the plant pays', id: 'feed_cost', label: 'Feedstock, dry', unit: '$ per dry t', min: 20, max: 180, step: 1, show: (v) => '$' + v + '/t' },
+    { group: 'What the plant pays', id: 'prod_cost', label: 'Running cost', unit: '$ per t biochar', min: 140, max: 320, step: 1, show: (v) => '$' + v + '/t' },
+    { group: 'How it is paid for', id: 'debt_share', label: 'Share borrowed', unit: '%', min: 0, max: 0.9, step: 0.05, show: (v) => Math.round(v * 100) + '%' },
+    { group: 'How it is paid for', id: 'debt_rate', label: 'Loan interest', unit: '% a year', min: 0.03, max: 0.14, step: 0.0025, show: (v) => (v * 100).toFixed(2).replace(/0$/, '') + '%' },
+    { group: 'How it is paid for', id: 'equity_rate', label: 'Owners\u2019 return', unit: '% a year', min: 0.06, max: 0.3, step: 0.005, show: (v) => (v * 100).toFixed(1) + '%' },
+  ];
+  const PRESETS = {
+    base: () => ({}),
+    upside: (b) => ({ char_price: 600, credit_price: 180, capex: b.capex_low, prod_cost: b.prod_cost_low, feed_cost: b.feed_cost_low }),
+    nocredits: () => ({ __credits: false }),
+    downside: (b) => ({ char_price: 300, credit_price: 100, capex: b.capex_high, prod_cost: b.prod_cost_high, feed_cost: 80 }),
+  };
+
+  let base = null, cur = null, creditOn = true, preset = 'base', openTab = 'overview';
+  let refRows = null, refCum = null, firstDraw = true;
+  const tip = document.createElement('div'); tip.className = 'bx-tip'; tip.hidden = true;
+  const $ = (id) => document.getElementById(id);
+
+  // Fit the dashboard to the window on wide screens
+  const fit = () => {
+    if (window.innerWidth < 900) { root.classList.remove('fit'); return; }
+    const top = root.getBoundingClientRect().top + window.scrollY;
+    const h = Math.max(600, window.innerHeight - top - 8);
+    root.style.setProperty('--fit-h', h + 'px'); root.classList.add('fit');
+  };
+
+  const build = () => {
+    const host = $('sliders'); host.replaceChildren();
+    const groups = {};
+    for (const f of FIELDS) {
+      if (!groups[f.group]) {
+        const fs = document.createElement('fieldset'); fs.className = 'bx-group';
+        const lg = document.createElement('legend'); lg.textContent = f.group; fs.append(lg);
+        if (f.group === 'What the plant sells') {
+          const t = document.createElement('label'); t.className = 'bx-toggle';
+          const cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'in-credits'; cb.checked = true;
+          cb.addEventListener('change', () => { creditOn = cb.checked; preset = null; update(); });
+          t.append(document.createTextNode('Sells carbon credits'), cb);
+          fs.append(t);
+        }
+        groups[f.group] = fs; host.append(fs);
+      }
+      const wrap = document.createElement('div'); wrap.className = 'bx-field';
+      const lab = document.createElement('label'); lab.htmlFor = 'in-' + f.id; lab.textContent = f.label + ' ';
+      lab.title = f.label + ' (' + f.unit + ')';
+      const out = document.createElement('output'); out.id = 'out-' + f.id;
+      const inp = document.createElement('input'); inp.type = 'range'; inp.id = 'in-' + f.id;
+      inp.min = f.min; inp.max = f.max; inp.step = f.step;
+      inp.addEventListener('input', () => { cur[f.id] = Number(inp.value); preset = null; update(); });
+      const bv = document.createElement('span'); bv.className = 'base'; bv.id = 'base-' + f.id;
+      wrap.append(lab, bv, out, inp);
+      groups[f.group].append(wrap);
+    }
+    root.querySelectorAll('[data-preset]').forEach((btn) => btn.addEventListener('click', () => applyPreset(btn.dataset.preset)));
+    $('reset').addEventListener('click', () => applyPreset('base'));
+    root.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+    root.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.go)));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && openTab !== 'overview') showTab('overview'); });
+  };
+
+  const showTab = (tab) => {
+    openTab = tab;
+    root.querySelectorAll('.bx-view').forEach((v) => { v.hidden = v.id !== 'v-' + tab; });
+    root.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+    dash.setLink(tab);
+    update();
+  };
+
+  const applyPreset = (name) => {
+    const ch = PRESETS[name](base);
+    cur = { ...base }; creditOn = ch.__credits !== false;
+    for (const [k, v] of Object.entries(ch)) if (k !== '__credits') cur[k] = v;
+    preset = name; update();
+  };
+
+  const delta = (el, now, ref, kind) => {
+    el.replaceChildren();
+    if (now == null || ref == null) return;
+    const diff = now - ref;
+    const same = kind === 'pct' ? Math.abs(diff) < 0.0005 : kind === 'm' ? Math.abs(diff) < 5e4 : kind === 'yrs' ? Math.abs(diff) < 0.05 : Math.abs(diff) < 0.5;
+    const good = kind === 'yrs' || kind === 'be' ? diff < 0 : diff > 0;
+    const s = document.createElement('span');
+    s.className = same ? 'flat' : good ? 'up' : 'down';
+    const sign = diff > 0 ? '+' : '−';
+    s.textContent = same ? 'Same as the report' :
+      kind === 'pct' ? sign + (Math.abs(diff) * 100).toFixed(1) + ' points' :
+      kind === 'm' ? sign + '$' + (Math.abs(diff) / 1e6).toFixed(1) + 'M' :
+      kind === 'yrs' ? sign + Math.abs(diff).toFixed(1) + ' years' : sign + '$' + Math.round(Math.abs(diff)) + '/t';
+    el.append(s);
+  };
+
+  const lineChart = (host, { series, xDomain, yDomain, xFmt, yFmt, refs = [], tipFor, xTicks, animate }) => {
+    host.replaceChildren();
+    const W = Math.max(260, host.clientWidth), H = Math.max(140, Math.floor(host.getBoundingClientRect().height) || 220);
+    const svg = d3.select(host).append('svg').attr('width', '100%').attr('height', H).attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
+    const y = d3.scaleLinear(yDomain, [H - 24, 8]).nice(H > 260 ? 6 : 4);
+    const yt = y.ticks(H > 260 ? 6 : 4);
+    const probe = svg.append('g').attr('font-size', 11);
+    const wid = d3.max(yt.map((t) => probe.append('text').text(yFmt(t)).node().getComputedTextLength())) || 30;
+    probe.remove();
+    const m = { l: wid + 10, r: 12 };
+    const x = d3.scaleLinear(xDomain, [m.l, W - m.r]);
+    const g = svg.append('g');
+    g.selectAll('line.grid').data(yt).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y)
+      .style('stroke', (d) => d === 0 ? 'var(--muted)' : 'var(--rule)').attr('stroke-width', 1);
+    g.selectAll('text.yt').data(yt).join('text').attr('x', m.l - 8).attr('y', (d) => y(d) + 4).attr('text-anchor', 'end')
+      .attr('font-size', 11).style('fill', 'var(--muted)').text(yFmt);
+    g.selectAll('text.xt').data(x.ticks(xTicks || 6)).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle')
+      .attr('font-size', 11).style('fill', 'var(--muted)').text(xFmt);
+    for (const r of refs) {
+      g.append('line').attr('x1', x(r.x)).attr('x2', x(r.x)).attr('y1', 8).attr('y2', H - 24)
+        .style('stroke', 'var(--ember)').attr('stroke-width', 1.5).attr('stroke-dasharray', '4 4');
+      const right = x(r.x) > W - 90;
+      g.append('text').attr('x', right ? x(r.x) - 6 : x(r.x) + 6).attr('y', 18).attr('text-anchor', right ? 'end' : 'start').attr('font-size', 11).style('fill', 'var(--ember)').text(r.label);
+    }
+    for (const s of series.filter((s) => s.type === 'bar')) {
+      const bw = Math.max(3, (x(xDomain[0] + 1) - x(xDomain[0])) * 0.62);
+      g.selectAll(null).data(s.points).join('rect').attr('x', (d) => x(d.x) - bw / 2).attr('width', bw)
+        .attr('y', (d) => Math.min(y(0), y(d.y))).attr('height', (d) => Math.abs(y(d.y) - y(0))).attr('rx', 1.5)
+        .style('fill', (d) => d.y < 0 ? 'var(--rust)' : 'var(--moss)');
+    }
+    for (const s of series.filter((s) => s.type !== 'bar')) {
+      const path = g.append('path').attr('d', d3.line().x((d) => x(d.x)).y((d) => y(d.y))(s.points)).style('fill', 'none')
+        .style('stroke', s.color).attr('stroke-width', s.width || 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round')
+        .attr('stroke-dasharray', s.dash || null);
+      if (animate && !s.dash) { const len = path.node().getTotalLength(); path.attr('class', 'draw').style('--len', len); }
+      for (const dot of s.dots || []) {
+        g.append('circle').attr('cx', x(dot.x)).attr('cy', y(dot.y)).attr('r', 4).style('fill', 'var(--paper)').style('stroke', s.color).attr('stroke-width', 2);
+      }
+    }
+    const hover = g.append('g').attr('pointer-events', 'none');
+    const xs = series[0].points.map((d) => d.x);
+    svg.append('rect').attr('x', m.l).attr('y', 0).attr('width', W - m.l - m.r).attr('height', H - 24).style('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const [px] = d3.pointer(ev);
+        const xv = x.invert(px);
+        const xi = xs[d3.minIndex(xs, (v) => Math.abs(v - xv))];
+        hover.selectAll('*').remove();
+        hover.append('line').attr('x1', x(xi)).attr('x2', x(xi)).attr('y1', 8).attr('y2', H - 24).style('stroke', 'var(--muted)');
+        const rows = series.map((s) => ({ s, p: s.points.find((d) => d.x === xi) })).filter((r) => r.p);
+        rows.forEach((r) => hover.append('circle').attr('cx', x(xi)).attr('cy', y(r.p.y)).attr('r', 3.5)
+          .style('fill', r.s.type === 'bar' ? (r.p.y < 0 ? 'var(--rust)' : 'var(--moss)') : r.s.color));
+        tip.replaceChildren();
+        const h = document.createElement('div'); h.className = 'h'; h.textContent = tipFor(xi); tip.append(h);
+        for (const r of rows) {
+          const line = document.createElement('div'); const sw = document.createElement('span'); sw.className = 's';
+          sw.style.background = r.s.type === 'bar' ? 'var(--moss)' : r.s.color;
+          line.append(sw, document.createTextNode(r.s.name + '  ' + fmtM(r.p.y))); tip.append(line);
+        }
+        tip.hidden = false; host.append(tip);
+        const tw = tip.offsetWidth; const left = Math.min(Math.max(0, (x(xi) / W) * host.clientWidth + 12), host.clientWidth - tw);
+        tip.style.left = left + 'px'; tip.style.top = '6px';
+      })
+      .on('pointerleave', () => { hover.selectAll('*').remove(); tip.hidden = true; });
+  };
+
+  const legend = (el, items) => {
+    el.replaceChildren(...items.map((it) => { const s = document.createElement('span'); if (it.color) { const i = document.createElement('i'); i.style.background = it.color; s.append(i); } s.append(document.createTextNode(it.name)); return s; }));
+  };
+  const fail = (el) => { el.replaceChildren(); const d = document.createElement('div'); d.className = 'bx-fail'; d.textContent = 'Failed to load'; el.append(d); };
+  const visible = (el) => el && el.offsetParent !== null && el.clientWidth > 0;
+
+  const drawCum = (host, res, animate) => {
+    if (!visible(host)) return;
+    if (dash.data('cash_flow').status === 'error') { fail(host); return; }
+    let run = 0; const mine = res.flows.map((v, i) => ({ x: i, y: (run += v) }));
+    const series = [{ name: 'Your case', type: 'bar', color: 'var(--moss)', points: mine }];
+    if (refCum) series.push({ name: 'Report case', color: 'var(--ember)', points: refCum, dash: '5 4', width: 1.75 });
+    const all = series.flatMap((s) => s.points.map((p) => p.y));
+    lineChart(host, { series, xDomain: [0, cur.life], yDomain: [Math.min(0, d3.min(all)), Math.max(0, d3.max(all))],
+      xFmt: (v) => String(v), yFmt: fmtAx, tipFor: (v) => 'Year ' + v + (v === 0 ? ' (construction)' : ''), xTicks: 10, animate });
+  };
+  const drawPrice = (host, animate) => {
+    if (!visible(host)) return null;
+    const prices = d3.range(100, 901, 10);
+    const withC = prices.map((v) => ({ x: v, y: evaluate({ ...cur, char_price: v }, true).npv }));
+    const noC = prices.map((v) => ({ x: v, y: evaluate({ ...cur, char_price: v }, false).npv }));
+    const beW = breakEven(cur, 'char_price', true), beN = breakEven(cur, 'char_price', false);
+    const ps = [
+      { name: 'With credits at $' + Math.round(cur.credit_price) + (creditOn ? '' : ' (if sold)'), color: creditOn ? 'var(--you)' : 'var(--sage)', width: creditOn ? 2.5 : 2, points: withC, dots: beW > 100 && beW < 900 ? [{ x: beW, y: 0 }] : [] },
+      { name: 'Without credits', color: creditOn ? 'var(--sage)' : 'var(--you)', width: creditOn ? 2 : 2.5, points: noC, dots: beN > 100 && beN < 900 ? [{ x: beN, y: 0 }] : [] },
+    ];
+    const pa = ps.flatMap((s) => s.points.map((p) => p.y));
+    lineChart(host, { series: ps, xDomain: [100, 900], yDomain: [Math.min(0, d3.min(pa)), Math.max(0, d3.max(pa))],
+      xFmt: (v) => '$' + v, yFmt: fmtAx, refs: [{ x: cur.char_price, label: 'Your price' }], tipFor: (v) => 'Biochar at $' + v + ' a tonne', xTicks: 5, animate });
+    return { ps, beW, beN };
+  };
+
+  const update = () => {
+    if (!cur) return;
+    for (const f of FIELDS) {
+      const inp = $('in-' + f.id), out = $('out-' + f.id);
+      if (document.activeElement !== inp) inp.value = cur[f.id];
+      out.textContent = f.show(cur[f.id]);
+      out.classList.toggle('moved', Math.abs(cur[f.id] - base[f.id]) > 1e-9);
+      $('base-' + f.id).textContent = f.show(base[f.id]);
+    }
+    $('in-credits').checked = creditOn;
+    for (const id of ['credit_price', 'co2_per_t']) $('in-' + id).disabled = !creditOn;
+    root.querySelectorAll('[data-preset]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.preset === preset)));
+
+    const res = evaluate(cur, creditOn);
+    const be = breakEven(cur, 'char_price', creditOn);
+    const setV = (id, s) => { const el = $(id); if (el.textContent !== s) { el.textContent = s; if (!firstDraw) { el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse'); } } };
+    setV('v-firr', fmtPct(res.firr)); setV('v-npv', fmtM(res.npv)); setV('v-pb', fmtYrs(res.payback));
+    setV('v-be', be == null ? 'None' : be <= 0 ? '$0/t' : fmtUsd(be) + '/t');
+    if (refRows) {
+      delta($('d-firr'), res.firr, refRows.firr, 'pct'); delta($('d-npv'), res.npv, refRows.npv, 'm');
+      delta($('d-pb'), res.payback, refRows.payback, 'yrs'); delta($('d-be'), be, refRows.be_char_credits, 'be');
+    }
+
+    const tk = $('takeaway'); tk.classList.remove('dash-skeleton'); tk.replaceChildren();
+    const B = (s) => { const b = document.createElement('b'); b.textContent = s; return b; };
+    const T = (s) => document.createTextNode(s);
+    if (res.firr == null) tk.append(T('In your case the plant never earns back what it costs to build, and is worth '), B(fmtM(res.npv)), T(' today at a '), B(fmtPct(res.wacc)), T(' cost of capital.'));
+    else tk.append(T('In your case the plant returns '), B(fmtPct(res.firr)), T(' a year against a '), B(fmtPct(res.wacc)), T(' cost of capital, and is worth '), B(fmtM(res.npv)), T(' today.'));
+    const pill = $('verdict-pill'); pill.className = 'bx-pill ' + (res.npv > 0 ? 'ok' : 'bad');
+    pill.textContent = res.npv > 0 ? 'Clears the hurdle' : 'Falls short';
+
+    // charts on the dashboard and in the pack (only the ones on screen are drawn)
+    drawCum($('cum-chart'), res, false);
+    legend($('cum-legend'), [{ name: 'Cash in', color: 'var(--moss)' }, { name: 'Cash out', color: 'var(--rust)' }, ...(refCum ? [{ name: 'Report case', color: 'var(--ember)' }] : [])]);
+    const pr = drawPrice($('price-chart'), firstDraw);
+    if (pr) legend($('price-legend'), [...pr.ps.map((s) => ({ name: s.name, color: s.color })),
+      { name: `Break-even $${pr.beW == null ? '–' : Math.round(pr.beW)} and $${pr.beN == null ? '–' : Math.round(pr.beN)}` }]);
+    if (openTab === 'cum') drawCum($('cum-chart-big'), res, false);
+    if (openTab === 'price') {
+      const big = drawPrice($('price-chart-big'), false);
+      if (big) $('price-cap').replaceChildren(B('Figure 2. '), T(`Break-even biochar price: $${big.beW == null ? '–' : Math.round(big.beW)} a tonne with credits, $${big.beN == null ? '–' : Math.round(big.beN)} without. Source: model run.`));
+    }
+
+    // conditions
+    const conds = [
+      { t: 'Biochar sold at $500 a tonne or more', short: 'Biochar ≥ $500', ok: cur.char_price >= 500, now: '$' + cur.char_price + ' a tonne' },
+      { t: 'Credits contracted for at least 5 years, with registry certification', short: 'Credit contracts', na: creditOn ? 'Not in the model' : 'No credits in your case' },
+      { t: 'Lab tests confirm about 2.5 t of CO2 credited per tonne', short: 'CO2 ≥ 2.5 t', ok: creditOn ? cur.co2_per_t >= 2.5 : null, na: creditOn ? null : 'No credits in your case', now: cur.co2_per_t.toFixed(1) + ' t' },
+      { t: 'Feedstock delivered at or near $55 a dry tonne', short: 'Feedstock ≤ $55', ok: cur.feed_cost <= 55, now: '$' + cur.feed_cost + ' a dry tonne' },
+      { t: 'Cost to build at or below $28.1M', short: 'Capital ≤ $28.1M', ok: cur.capex <= 28.1e6, now: '$' + (cur.capex / 1e6).toFixed(1) + 'M' },
+    ];
+    const mini = $('cond-mini'); mini.replaceChildren();
+    const ul = $('cond-list'); ul.replaceChildren();
+    conds.forEach((c, i) => {
+      const cls = c.ok == null ? 'na' : c.ok ? 'ok' : 'bad';
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'bx-cond ' + cls; b.title = c.t;
+      const bn = document.createElement('span'); bn.className = 'n'; bn.textContent = i + 1;
+      const bt = document.createElement('span'); bt.className = 't'; bt.textContent = c.short;
+      const bs = document.createElement('span'); bs.className = 's ' + cls; bs.textContent = cls === 'ok' ? '✓ Met' : cls === 'bad' ? '✕ Not met' : 'Not in the model';
+      b.append(bn, bt, bs); b.addEventListener('click', () => showTab('cond')); mini.append(b);
+      const li = document.createElement('li');
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = i + 1;
+      const t = document.createElement('span'); t.className = 't'; t.textContent = c.t;
+      if (c.now) { const sm = document.createElement('small'); sm.textContent = 'Your case: ' + c.now; t.append(sm); }
+      const s = document.createElement('span'); s.className = 's ' + cls;
+      s.textContent = cls === 'na' ? (c.na || 'Not in the model') : cls === 'ok' ? 'Met' : 'Not met';
+      li.append(n, t, s); ul.append(li);
+    });
+
+    // year table
+    const cols = [['year', 'Year'], ['biochar_t', 'Biochar (t)'], ['char_sales', 'Biochar sales'], ['credit_sales', 'Credit sales'], ['capital', 'Capital'],
+                  ['feedstock', 'Feedstock'], ['production', 'Production'], ['salvage', 'Salvage'], ['net', 'Net'], ['cum', 'Cumulative']];
+    const hr = document.createElement('tr'); cols.forEach(([, l]) => { const h = document.createElement('th'); h.textContent = l; hr.append(h); });
+    document.querySelector('#cf-table thead').replaceChildren(hr);
+    const tb = document.querySelector('#cf-table tbody'); tb.replaceChildren(); let c2 = 0;
+    for (const r of res.rows) {
+      c2 += r.net; const tr = document.createElement('tr');
+      for (const [k] of cols) {
+        const td = document.createElement('td');
+        td.textContent = k === 'year' ? String(r.year) : k === 'biochar_t' ? Math.round(r.biochar_t).toLocaleString('en') : fmtK(k === 'cum' ? c2 : k === 'capital' ? -r.capital : r[k]);
+        tr.append(td);
+      }
+      tb.append(tr);
+    }
+    firstDraw = false;
+  };
+
+  const LABEL_FMT = { firr: fmtPct, wacc: fmtPct, npv: fmtUsd, upside_npv: fmtUsd, nocredits_npv: fmtUsd, downside_npv: fmtUsd,
+                      payback: (v) => v.toFixed(2) + ' years', be_char_credits: (v) => '$' + v.toFixed(2), be_char_nocredits: (v) => '$' + v.toFixed(2),
+                      be_credit: (v) => '$' + v.toFixed(2), be_feed: (v) => '$' + v.toFixed(2) };
+
+  window.addEventListener('resize', () => { fit(); update(); });
+  // Redraw when a chart's box changes size (fonts arriving, window height, opening the pack)
+  let raf = 0; const sizes = new Map();
+  const ro = new ResizeObserver((entries) => {
+    let changed = false;
+    for (const e of entries) { const k = Math.round(e.contentRect.width) + 'x' + Math.round(e.contentRect.height); if (sizes.get(e.target) !== k) { sizes.set(e.target, k); changed = true; } }
+    if (changed && cur) { cancelAnimationFrame(raf); raf = requestAnimationFrame(update); }
+  });
+  ['cum-chart', 'price-chart', 'cum-chart-big', 'price-chart-big'].forEach((id) => ro.observe($(id)));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fit(); update(); });
+  dash.onData(() => {
+    fit();
+    const inp = dash.data('inputs'), mr = dash.data('model_results'), cf = dash.data('cash_flow'), pc = dash.data('page_check');
+    if (mr.status === 'ok') {
+      refRows = Object.fromEntries(mr.data.map((r) => [r.metric, Number(r.value)]));
+      $('r-firr').textContent = fmtPct(refRows.firr); $('r-npv').textContent = fmtM(refRows.npv);
+      $('r-pb').textContent = fmtYrs(refRows.payback); $('r-be').textContent = fmtUsd(refRows.be_char_credits) + '/t';
+      const tb = document.querySelector('#check-table tbody'); tb.replaceChildren();
+      const mine = pc.status === 'ok' ? Object.fromEntries(pc.data.map((r) => [r.metric, r.value])) : {};
+      let worst = 0;
+      for (const r of mr.data) {
+        const tr = document.createElement('tr'); tr.dataset.key = r.metric;
+        const f = LABEL_FMT[r.metric] || ((v) => String(v));
+        const a = document.createElement('td'); a.textContent = r.measure;
+        const b = document.createElement('td'); b.textContent = f(Number(r.value));
+        const c = document.createElement('td'); c.textContent = mine[r.metric] == null ? '—' : f(mine[r.metric]);
+        if (mine[r.metric] != null) worst = Math.max(worst, Math.abs(mine[r.metric] - Number(r.value)) / Math.max(1, Math.abs(Number(r.value))));
+        tr.append(a, b, c); tb.append(tr);
+      }
+      const ok = pc.status === 'ok' && worst < 1e-9;
+      $('check-line').textContent = pc.status === 'ok' ? (ok ? '✓ Every measure matches the Python model to the last digit shown.' : 'At least one measure differs from the Python model.') : '';
+      $('check-line').classList.toggle('ok', ok);
+    }
+    if (cf.status === 'ok') { let run = 0; refCum = cf.data.map((r) => ({ x: Number(r.year), y: (run += Number(r.net)) })); }
+    if (inp.status === 'ok') {
+      if (!base) {
+        base = Object.fromEntries(inp.data.map((r) => [r.id, Number(r.value)]));
+        cur = { ...base }; build(); root.classList.add('ready');
+        const named = location.hash.slice(1);
+        if (['cum', 'price', 'cond', 'table', 'check'].includes(named)) { update(); showTab(named); return; }
+      }
+      update();
+    } else if (inp.status === 'error') fail($('sliders'));
+  });
+})();
+</script>
+
+</div>
+</body>
+</html>

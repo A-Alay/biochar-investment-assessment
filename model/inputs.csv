@@ -1,0 +1,30 @@
+id,description,value,unit,status,source,location
+feed_tonnes,Dry feedstock processed at full capacity,45360,dry t per year,Sourced,Sessions et al. 2019,"p. 177, Section 2.2.1 (plant definition)"
+yield,Biochar yield on dry feedstock (thermal pyrolysis),0.36,fraction,Sourced,Sessions et al. 2019,"p. 178, Section 2.2.2 and Table 2"
+capex,Capital cost: Worden OR site; thermal pyrolysis; Scenario 2 (heat recovery); includes engineering and 15% contingency,19100000,USD,Sourced,Sessions et al. 2019,"p. 180, Table 5"
+capex_low,Lowest capital cost across all sites; technologies and scenarios,17000000,USD,Sourced,Sessions et al. 2019,"p. 180, Table 5 (Yreka, microwave, Scenario 1)"
+capex_high,Highest capital cost across all sites; technologies and scenarios,28100000,USD,Sourced,Sessions et al. 2019,"p. 180, Table 5 (Worden, thermal, Scenario 4)"
+feed_cost,Delivered feedstock cost used for planning at Worden OR,55,USD per dry t,Sourced,Sessions et al. 2019,"p. 181, Section 3.5"
+feed_cost_low,Low end of collection and delivery cost to Worden OR,43,USD per dry t,Sourced,Sessions et al. 2019,"p. 179, Section 3.1"
+feed_cost_high,High end of collection and delivery cost to Worden OR,135,USD per dry t,Sourced,Sessions et al. 2019,"p. 179, Section 3.1"
+prod_cost,Direct biochar production cost: Worden; thermal; Scenario 2 (excludes feedstock and capital),207,USD per t biochar,Sourced,Sessions et al. 2019,"p. 182, Table 9"
+prod_cost_low,Lowest direct production cost for thermal pyrolysis (Worden Scenario 3),184,USD per t biochar,Sourced,Sessions et al. 2019,"p. 182, Table 9"
+prod_cost_high,Highest direct production cost for thermal pyrolysis (Yreka Scenario 1),254,USD per t biochar,Sourced,Sessions et al. 2019,"p. 182, Table 9"
+life,Operating life,20,years,Sourced,Sessions et al. 2019,"p. 182, Table 9 header"
+salvage_share,Salvage value at end of life as share of capital,0.20,fraction,Sourced,Sessions et al. 2019,"p. 182, Table 9 header"
+staff_fte,Plant staff (Scenarios 1 and 2); cost is inside direct production cost,26.5,FTE,Sourced,Sessions et al. 2019,"p. 181, Table 6"
+credit_price,U.S. biochar carbon removal credit price for 2026 delivery,148,USD per t CO2,Sourced,"S&P Global (Oct. 2025), as reported by Carbon Credits, Dec. 3, 2025","https://carboncredits.com/?p=39628, price section"
+char_price,Biochar sale price,500,USD per t,Assumption,None,"Context: 2014 survey average wholesale price $1,500 per t (Sessions et al. 2019, p. 183, Section 3.8)"
+char_price_low,Biochar sale price for sensitivity: low,250,USD per t,Assumption,None,
+char_price_high,Biochar sale price for sensitivity: high,700,USD per t,Assumption,None,
+credit_price_low,Credit price for sensitivity: low,80,USD per t CO2,Assumption,None,
+credit_price_high,Credit price for sensitivity: high,220,USD per t CO2,Assumption,None,
+co2_per_t,CO2 credited per tonne of biochar,2.5,t CO2 per t biochar,Assumption,None,To be replaced by lab test and registry method
+co2_per_t_low,CO2 credited for sensitivity: low,1.8,t CO2 per t biochar,Assumption,None,
+co2_per_t_high,CO2 credited for sensitivity: high,3.0,t CO2 per t biochar,Assumption,None,
+credit_fee,Share of credit revenue lost to verification; registry and broker fees,0.15,fraction,Assumption,None,
+ramp_y1,Capacity use in operating year 1,0.60,fraction,Assumption,None,
+ramp_y2,Capacity use in operating year 2,0.85,fraction,Assumption,None,
+debt_share,Debt share of project cost,0.60,fraction,Assumption,None,To be replaced by lender term sheet
+debt_rate,Nominal pre-tax cost of debt,0.075,fraction,Assumption,None,To be replaced by lender term sheet
+equity_rate,Nominal cost of equity,0.15,fraction,Assumption,None,To be replaced by sponsor hurdle rate

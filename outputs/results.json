@@ -1,0 +1,575 @@
+{
+  "wacc": 0.105,
+  "base": {
+    "npv": 38936501.12753669,
+    "firr": 0.3375616732827862,
+    "payback": 3.1222409147373513,
+    "npv_at_8pct": 50918483.4256078,
+    "npv_at_12pct": 33219986.413600586
+  },
+  "cash_flow_rows": [
+    {
+      "year": 0,
+      "biochar_t": 0,
+      "char_sales": 0,
+      "credit_sales": 0,
+      "capital": 19100000.0,
+      "feedstock": 0,
+      "production": 0,
+      "salvage": 0,
+      "net": -19100000.0
+    },
+    {
+      "year": 1,
+      "biochar_t": 9797.76,
+      "char_sales": 4898880.0,
+      "credit_sales": 3081395.52,
+      "capital": 0,
+      "feedstock": 1496880.0,
+      "production": 2028136.32,
+      "salvage": 0.0,
+      "net": 4455259.199999999
+    },
+    {
+      "year": 2,
+      "biochar_t": 13880.16,
+      "char_sales": 6940080.0,
+      "credit_sales": 4365310.32,
+      "capital": 0,
+      "feedstock": 2120580.0,
+      "production": 2873193.12,
+      "salvage": 0.0,
+      "net": 6311617.2
+    },
+    {
+      "year": 3,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 4,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 5,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 6,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 7,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 8,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 9,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 10,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 11,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 12,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 13,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 14,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 15,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 16,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 17,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 18,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 19,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 0.0,
+      "net": 7425432.0
+    },
+    {
+      "year": 20,
+      "biochar_t": 16329.599999999999,
+      "char_sales": 8164799.999999999,
+      "credit_sales": 5135659.2,
+      "capital": 0,
+      "feedstock": 2494800.0,
+      "production": 3380227.1999999997,
+      "salvage": 3820000.0,
+      "net": 11245432.0
+    }
+  ],
+  "full_capacity_year": {
+    "biochar_t": 16329.599999999999,
+    "char_sales": 8164799.999999999,
+    "credit_sales": 5135659.2,
+    "feedstock": 2494800.0,
+    "production": 3380227.1999999997,
+    "net": 7425432.0
+  },
+  "totals": {
+    "char_sales": 158805359.99999997,
+    "credit_sales": 99888571.44,
+    "capital": 19100000.0,
+    "feedstock": 48523860.0,
+    "production": 65745419.03999999,
+    "salvage": 3820000.0,
+    "net": 129144652.4
+  },
+  "co2_credited_full": 40824.0,
+  "standard_tests": {
+    "revenue_minus_10": {
+      "npv": 28633871.85504451,
+      "firr": 0.2810695575574951,
+      "payback": 3.6835176721078184
+    },
+    "biochar_price_minus_10": {
+      "npv": 32611989.603600428,
+      "firr": 0.30312666571207325,
+      "payback": 3.4400194766129335
+    },
+    "operating_cost_plus_10": {
+      "npv": 34385663.72431321,
+      "firr": 0.3128569412874649,
+      "payback": 3.343243278468069
+    },
+    "capital_plus_10": {
+      "npv": 37078359.37102164,
+      "firr": 0.3091442484577911,
+      "payback": 3.3794650062110865
+    },
+    "credit_price_minus_10": {
+      "npv": 34958383.37898076,
+      "firr": 0.3159861333593803,
+      "payback": 3.3133637253573642
+    },
+    "delay_1yr_capital_plus_10": {
+      "npv": 31558651.014499225,
+      "firr": 0.2504309935009381,
+      "payback": 4.3794650062110865
+    }
+  },
+  "switching_values_pct": {
+    "revenue": -37.792780947186365,
+    "biochar_price": -61.56444016296657,
+    "operating_cost": 85.55898107886027,
+    "capital": 209.54537505557425,
+    "credit_price": -97.87669342284032
+  },
+  "tornado": {
+    "char_price": {
+      "low_input": 250.0,
+      "low_npv": 7313943.507855347,
+      "high_input": 700.0,
+      "high_npv": 64234547.22328174
+    },
+    "credit_price": {
+      "low_input": 80.0,
+      "low_npv": 20658662.823360883,
+      "high_input": 220.0,
+      "high_npv": 58289506.39078166
+    },
+    "feed_cost": {
+      "low_input": 135.0,
+      "low_npv": 10827561.021153275,
+      "high_input": 43.0,
+      "high_npv": 43152842.14349419
+    },
+    "prod_cost": {
+      "low_input": 254.0,
+      "low_npv": 32991460.29503659,
+      "high_input": 184.0,
+      "high_npv": 41845776.42854736
+    },
+    "co2_per_t": {
+      "low_input": 1.8,
+      "low_npv": 27797771.431580115,
+      "high_input": 3.0,
+      "high_npv": 46892736.62464851
+    },
+    "capex": {
+      "low_input": 28100000.0,
+      "low_npv": 30180859.342910856,
+      "high_input": 17000000.0,
+      "high_npv": 40979484.21061605
+    }
+  },
+  "scenarios": {
+    "upside": {
+      "npv": 69355459.24801008,
+      "firr": 0.5385853764541153,
+      "payback": 2.083091472822581,
+      "inputs": "biochar 600, credits 180, capital 17.0M, production 184, feedstock 43"
+    },
+    "no_credits": {
+      "npv": -844676.3580224367,
+      "firr": 0.09891932769063683,
+      "payback": 8.891438941016334
+    },
+    "downside": {
+      "npv": -22748274.877409093,
+      "firr": -0.03363091104560656,
+      "payback": null,
+      "inputs": "biochar 300, credits 100, capital 28.1M, production 254, feedstock 80"
+    }
+  },
+  "breakeven": {
+    "char_price_with_credits": 192.1777991851668,
+    "char_price_without_credits": 506.6777991851677,
+    "credit_price": 3.1424937341961585,
+    "capital": 59123166.6356147,
+    "feed_cost": 165.81599229334017
+  },
+  "price_curve": [
+    {
+      "char_price": 150,
+      "npv_with_credits": -5335079.540017181,
+      "npv_without_credits": -45116257.02557629
+    },
+    {
+      "char_price": 200,
+      "npv_with_credits": 989431.9839190833,
+      "npv_without_credits": -38791745.50164004
+    },
+    {
+      "char_price": 250,
+      "npv_with_credits": 7313943.507855347,
+      "npv_without_credits": -32467233.977703765
+    },
+    {
+      "char_price": 300,
+      "npv_with_credits": 13638455.031791613,
+      "npv_without_credits": -26142722.453767505
+    },
+    {
+      "char_price": 350,
+      "npv_with_credits": 19962966.555727884,
+      "npv_without_credits": -19818210.929831237
+    },
+    {
+      "char_price": 400,
+      "npv_with_credits": 26287478.07966415,
+      "npv_without_credits": -13493699.405894976
+    },
+    {
+      "char_price": 450,
+      "npv_with_credits": 32611989.603600428,
+      "npv_without_credits": -7169187.881958705
+    },
+    {
+      "char_price": 500,
+      "npv_with_credits": 38936501.12753669,
+      "npv_without_credits": -844676.3580224367
+    },
+    {
+      "char_price": 550,
+      "npv_with_credits": 45261012.65147294,
+      "npv_without_credits": 5479835.165913836
+    },
+    {
+      "char_price": 600,
+      "npv_with_credits": 51585524.175409205,
+      "npv_without_credits": 11804346.6898501
+    },
+    {
+      "char_price": 650,
+      "npv_with_credits": 57910035.69934549,
+      "npv_without_credits": 18128858.21378636
+    },
+    {
+      "char_price": 700,
+      "npv_with_credits": 64234547.22328174,
+      "npv_without_credits": 24453369.73772263
+    },
+    {
+      "char_price": 750,
+      "npv_with_credits": 70559058.74721801,
+      "npv_without_credits": 30777881.261658896
+    }
+  ],
+  "designs": [
+    {
+      "site": "Worden",
+      "technology": "Thermal",
+      "scenario": "1",
+      "capital_musd": "17.5",
+      "total_cost_per_t": "468",
+      "reference": "0"
+    },
+    {
+      "site": "Worden",
+      "technology": "Thermal",
+      "scenario": "2",
+      "capital_musd": "19.1",
+      "total_cost_per_t": "446",
+      "reference": "1"
+    },
+    {
+      "site": "Worden",
+      "technology": "Thermal",
+      "scenario": "3",
+      "capital_musd": "27.3",
+      "total_cost_per_t": "461",
+      "reference": "0"
+    },
+    {
+      "site": "Worden",
+      "technology": "Thermal",
+      "scenario": "4",
+      "capital_musd": "28.1",
+      "total_cost_per_t": "475",
+      "reference": "0"
+    },
+    {
+      "site": "Worden",
+      "technology": "Microwave",
+      "scenario": "1",
+      "capital_musd": "17.2",
+      "total_cost_per_t": "545",
+      "reference": "0"
+    },
+    {
+      "site": "Worden",
+      "technology": "Microwave",
+      "scenario": "2",
+      "capital_musd": "18.8",
+      "total_cost_per_t": "543",
+      "reference": "0"
+    },
+    {
+      "site": "Worden",
+      "technology": "Microwave",
+      "scenario": "3",
+      "capital_musd": "27.0",
+      "total_cost_per_t": "558",
+      "reference": "0"
+    },
+    {
+      "site": "Worden",
+      "technology": "Microwave",
+      "scenario": "4",
+      "capital_musd": "27.8",
+      "total_cost_per_t": "563",
+      "reference": "0"
+    },
+    {
+      "site": "Yreka",
+      "technology": "Thermal",
+      "scenario": "1",
+      "capital_musd": "17.3",
+      "total_cost_per_t": "515",
+      "reference": "0"
+    },
+    {
+      "site": "Yreka",
+      "technology": "Thermal",
+      "scenario": "2",
+      "capital_musd": "18.9",
+      "total_cost_per_t": "489",
+      "reference": "0"
+    },
+    {
+      "site": "Yreka",
+      "technology": "Thermal",
+      "scenario": "3",
+      "capital_musd": "27.1",
+      "total_cost_per_t": "507",
+      "reference": "0"
+    },
+    {
+      "site": "Yreka",
+      "technology": "Thermal",
+      "scenario": "4",
+      "capital_musd": "28.0",
+      "total_cost_per_t": "524",
+      "reference": "0"
+    },
+    {
+      "site": "Yreka",
+      "technology": "Microwave",
+      "scenario": "1",
+      "capital_musd": "17.0",
+      "total_cost_per_t": "646",
+      "reference": "0"
+    },
+    {
+      "site": "Yreka",
+      "technology": "Microwave",
+      "scenario": "2",
+      "capital_musd": "18.7",
+      "total_cost_per_t": "642",
+      "reference": "0"
+    },
+    {
+      "site": "Yreka",
+      "technology": "Microwave",
+      "scenario": "3",
+      "capital_musd": "26.9",
+      "total_cost_per_t": "658",
+      "reference": "0"
+    },
+    {
+      "site": "Yreka",
+      "technology": "Microwave",
+      "scenario": "4",
+      "capital_musd": "27.7",
+      "total_cost_per_t": "665",
+      "reference": "0"
+    }
+  ],
+  "lowest_total_cost_design": {
+    "site": "Worden",
+    "technology": "Thermal",
+    "scenario": "2",
+    "capital_musd": "19.1",
+    "total_cost_per_t": "446",
+    "reference": "1"
+  },
+  "checks": {
+    "biochar_output_full_t": 16329.599999999999,
+    "source_biochar_output_t": 16330,
+    "direct_plus_feedstock_per_t": 359.77777777777777,
+    "source_direct_plus_feedstock_per_t": 359
+  }
+}

@@ -1,0 +1,7 @@
+numpy>=1.26
+numpy-financial>=1.0
+scipy>=1.11
+matplotlib>=3.8
+playwright>=1.40
+pypdf>=4.0
+pdfplumber>=0.10
