@@ -9,15 +9,15 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Investment Explorer · Forest-Residue Biochar Pyrolysis Plant">
 <meta property="og:description" content="A live what-if dashboard for a biochar plant investment. Move one number and the whole investment case answers back.">
-<meta property="og:image" content="https://YOUR-GITHUB-USERNAME.github.io/biochar-investment-assessment/images/explorer-preview.png">
+<meta property="og:image" content="https://a-alay.github.io/biochar-investment-assessment/images/explorer-preview.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  :root { --cds-gap-xs:4px; --cds-gap-sm:8px; --cds-gap-md:12px; --cds-gap-lg:20px; --cds-pad-xs:4px; --cds-pad-sm:8px; --cds-pad-md:12px; --cds-pad-lg:16px; --cds-pad-xl:24px;
-    --cds-font-size-caption:12px; --cds-font-size-body:14px; --cds-font-size-heading:16px; --cds-font-size-title:28px; --cds-font-weight-medium:500; --cds-radius:8px;
-    --cds-ease-out:cubic-bezier(.2,.8,.2,1); --cds-dur-slow:.4s; --font-fallback-sans: system-ui, -apple-system, 'Segoe UI', sans-serif; --font-fallback-serif: Georgia, serif;
-    --cds-shadow-popover: 0 4px 12px rgba(0,0,0,.35); color-scheme: dark; }
+  :root { --ui-gap-xs:4px; --ui-gap-sm:8px; --ui-gap-md:12px; --ui-gap-lg:20px; --ui-pad-xs:4px; --ui-pad-sm:8px; --ui-pad-md:12px; --ui-pad-lg:16px; --ui-pad-xl:24px;
+    --ui-font-size-caption:12px; --ui-font-size-body:14px; --ui-font-size-heading:16px; --ui-font-size-title:28px; --ui-font-weight-medium:500; --ui-radius:8px;
+    --ui-ease-out:cubic-bezier(.2,.8,.2,1); --ui-dur-slow:.4s; --font-fallback-sans: system-ui, -apple-system, 'Segoe UI', sans-serif; --font-fallback-serif: Georgia, serif;
+    --ui-shadow-popover: 0 4px 12px rgba(0,0,0,.35); color-scheme: dark; }
   html, body { margin: 0; background: #121A16; }
-  #dash-root { --dash-gutter: 0; }
+  #app-root { margin: 0; }
 </style>
 <script src="d3.min.js"></script>
 <script>
@@ -26,12 +26,10 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
 // Minimal runtime: hands the data to the page scripts and re-runs them on resize.
 (function () {
   const subs = [], calcs = {}, D = window.EXPLORER_DATA;
-  window.dash = {
-    colors: ['#B7D1B3', '#C8892B', '#8FB58B', '#D9826B', '#7F8A82', '#A3ACA4', '#4E7A5A', '#E7ECE6'],
+  window.app = {
     data: (id) => D[id] ? { status: 'ok', data: D[id] } : calcs[id] ? { status: 'ok', data: calcs[id].fn(...calcs[id].inputs.map((i) => D[i])) } : { status: 'missing', data: [] },
     calc: (id, c) => { calcs[id] = c; },
     onData: (fn) => { subs.push(fn); setTimeout(fn, 0); },
-    params: () => ({}), setParams() {}, resetParams() {}, refresh() {},
     setLink: (name) => { try { history.replaceState(null, '', name && name !== 'overview' && name !== 'top' ? '#' + name : location.pathname); } catch (e) {} },
   };
   let w = window.innerWidth;
@@ -40,11 +38,11 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
 </script>
 </head>
 <body>
-<div id="dash-root">
+<div id="app-root">
 <link rel="stylesheet" href="fonts.css">
 <style>
   /* Layout: one screen. Title row, tab row, then inputs on the left and the chosen view on the right. Every block shares one card style and one right edge. */
-  #dash-root { --dash-gutter: 0; }
+  #app-root { margin: 0; }
   .bx {
     --forest: #1F3A2E; --ember: #C8892B; --moss: #4E7A5A; --sage: #8FAE8B; --rust: #C0634B;
     --ink: #22262A; --muted: #6B7178; --head2: #9AA39C; --tile: #F2F5F1; --cream: #FAF4E8; --rule: #DFE4DE; --thead: #EEF2ED;
@@ -136,7 +134,7 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
   .bx-card.dark .k, .bx-card.dark .r { color: var(--on-dark-muted); }
   .bx-card.dark .foot { border-top-color: rgba(255,255,255,.18); }
   .bx-card.dark .d .up { color: #A9D3AE; } .bx-card.dark .d .down { color: #F0A893; } .bx-card.dark .d .flat { color: var(--on-dark-muted); }
-  .bx-tile .v.pulse { animation: bxPulse .6s var(--cds-ease-out); }
+  .bx-tile .v.pulse { animation: bxPulse .6s var(--ui-ease-out); }
 
   .bx-grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); min-height: 0; }
   .bx-chartcard { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; }
@@ -147,7 +145,7 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
   .bx-chart text { font-family: var(--sans); }
   .bx-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 14px; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
   .bx-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
-  .bx-tip { position: absolute; pointer-events: none; background: var(--paper); border: 1px solid var(--rule); border-top: 2px solid var(--ember); box-shadow: var(--cds-shadow-popover);
+  .bx-tip { position: absolute; pointer-events: none; background: var(--paper); border: 1px solid var(--rule); border-top: 2px solid var(--ember); box-shadow: var(--ui-shadow-popover);
             padding: 4px 8px; font-size: 12px; white-space: nowrap; z-index: 3; color: var(--ink); }
   .bx-tip .h { color: var(--muted); margin-bottom: 2px; }
   .bx-tip .s { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
@@ -190,8 +188,6 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
   .bx-checkline.ok { color: var(--ok-fg); font-weight: 600; }
 
   .bx :focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
-  .bx [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
-  .bx [data-dash-source-state=empty] { color: transparent; }
   .bx-fail { display: flex; align-items: center; justify-content: center; gap: .5rem; height: 100%; min-height: 120px; color: var(--muted); font-size: 12px; }
   .bx-fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--rust); }
 
@@ -200,8 +196,8 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
   @keyframes bxDraw { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
   @keyframes bxFade { from { opacity: 0; } to { opacity: 1; } }
   @media (prefers-reduced-motion: no-preference) {
-    .bx.ready #v-overview .bx-card, .bx.ready .bx-verdict { animation: bxRise .45s var(--cds-ease-out) both; }
-    .bx path.draw { stroke-dasharray: var(--len); animation: bxDraw .9s var(--cds-ease-out) both; }
+    .bx.ready #v-overview .bx-card, .bx.ready .bx-verdict { animation: bxRise .45s var(--ui-ease-out) both; }
+    .bx path.draw { stroke-dasharray: var(--len); animation: bxDraw .9s var(--ui-ease-out) both; }
     .bx-view:not([hidden]) { animation: bxFade .2s ease-out both; }
   }
   @media (prefers-reduced-motion: reduce) { .bx-tile .v.pulse { animation: none; } }
@@ -238,7 +234,7 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
 
 
   <div class="bx-main">
-    <aside class="bx-card bx-controls" id="controls" data-source="inputs">
+    <aside class="bx-card bx-controls" id="controls">
       <div><h2>Your case</h2><p class="sub">Move any input; every figure updates at once.</p><div class="bx-colhead"><span>Input</span><span>Report</span><span>Yours</span></div></div>
       <div id="sliders"></div>
       <button class="bx-reset" type="button" id="reset">Reset to the report case</button>
@@ -255,35 +251,35 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
       </div>
 
       <section class="bx-view" id="v-overview" role="tabpanel">
-        <div class="bx-verdict"><p class="bx-take dash-skeleton" id="takeaway">—</p><span class="bx-pill" id="verdict-pill"></span></div>
+        <div class="bx-verdict"><p class="bx-take loading" id="takeaway">—</p><span class="bx-pill" id="verdict-pill"></span></div>
 
         <div class="bx-grid4" id="tiles" aria-label="Results for your case">
           <div class="bx-card dark bx-tile" id="tile-firr">
             <div class="k">Return on the project</div>
             <div class="v" id="v-firr">—</div>
-            <div class="foot"><span class="d" id="d-firr"></span><span class="r">Report <span data-source="model_results" data-field="value" data-where="metric=firr" id="r-firr">—</span></span></div>
+            <div class="foot"><span class="d" id="d-firr"></span><span class="r">Report <span id="r-firr">—</span></span></div>
           </div>
           <div class="bx-card bx-tile" id="tile-npv">
             <div class="k">Value today at the cost of capital</div>
             <div class="v" id="v-npv">—</div>
-            <div class="foot"><span class="d" id="d-npv"></span><span class="r">Report <span data-source="model_results" data-field="value" data-where="metric=npv" id="r-npv">—</span></span></div>
+            <div class="foot"><span class="d" id="d-npv"></span><span class="r">Report <span id="r-npv">—</span></span></div>
           </div>
           <div class="bx-card bx-tile" id="tile-pb">
             <div class="k">Payback from start of operation</div>
             <div class="v" id="v-pb">—</div>
-            <div class="foot"><span class="d" id="d-pb"></span><span class="r">Report <span data-source="model_results" data-field="value" data-where="metric=payback" id="r-pb">—</span></span></div>
+            <div class="foot"><span class="d" id="d-pb"></span><span class="r">Report <span id="r-pb">—</span></span></div>
           </div>
           <div class="bx-card bx-tile" id="tile-be">
             <div class="k">Biochar price below which value turns negative</div>
             <div class="v" id="v-be">—</div>
-            <div class="foot"><span class="d" id="d-be"></span><span class="r">Report <span data-source="model_results" data-field="value" data-where="metric=be_char_credits" id="r-be">—</span></span></div>
+            <div class="foot"><span class="d" id="d-be"></span><span class="r">Report <span id="r-be">—</span></span></div>
           </div>
         </div>
 
         <div class="bx-grid2">
           <section class="bx-card bx-chartcard" id="cum-card">
             <div class="bx-cardhead"><h2>Cash in the bank, year by year</h2><button class="bx-more" type="button" data-go="cum">Full view</button></div>
-            <div class="bx-fig"><div class="tag">Figure 1</div><div class="bx-chart" id="cum-chart" data-source="cash_flow"></div></div>
+            <div class="bx-fig"><div class="tag">Figure 1</div><div class="bx-chart" id="cum-chart"></div></div>
             <div class="bx-legend" id="cum-legend"></div>
           </section>
           <section class="bx-card bx-chartcard" id="price-card">
@@ -345,8 +341,8 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
             <p class="sub j">This page runs the report's model in the browser. At the report's inputs it has to land on the figures the Python model published.</p></div>
             <button class="bx-back" type="button" data-go="overview">← Overview</button></div>
           <div class="bx-scroll">
-            <table id="check-table" data-source="model_results" data-row-key="metric">
-              <thead><tr><th data-field="measure">Measure</th><th data-field="value">Python model</th><th data-source="page_check" data-field="value">This page</th></tr></thead>
+            <table id="check-table">
+              <thead><tr><th>Measure</th><th>Python model</th><th>This page</th></tr></thead>
               <tbody></tbody>
             </table>
           </div>
@@ -358,7 +354,7 @@ window.EXPLORER_DATA = {"inputs":[{"id":"feed_tonnes","description":"Dry feedsto
 </div>
 
 <script>
-dash.calc('page_check', {
+app.calc('model_check', {
   inputs: ['inputs'],
   title: 'Model rerun in this page',
   description: 'The report model run in the browser on the input register, at the report inputs.',
@@ -555,7 +551,7 @@ dash.calc('page_check', {
     openTab = tab;
     root.querySelectorAll('.bx-view').forEach((v) => { v.hidden = v.id !== 'v-' + tab; });
     root.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
-    dash.setLink(tab);
+    app.setLink(tab);
     update();
   };
 
@@ -655,7 +651,7 @@ dash.calc('page_check', {
 
   const drawCum = (host, res, animate) => {
     if (!visible(host)) return;
-    if (dash.data('cash_flow').status === 'error') { fail(host); return; }
+    if (app.data('cash_flow').status === 'error') { fail(host); return; }
     let run = 0; const mine = res.flows.map((v, i) => ({ x: i, y: (run += v) }));
     const series = [{ name: 'Your case', type: 'bar', color: 'var(--moss)', points: mine }];
     if (refCum) series.push({ name: 'Report case', color: 'var(--ember)', points: refCum, dash: '5 4', width: 1.75 });
@@ -702,7 +698,7 @@ dash.calc('page_check', {
       delta($('d-pb'), res.payback, refRows.payback, 'yrs'); delta($('d-be'), be, refRows.be_char_credits, 'be');
     }
 
-    const tk = $('takeaway'); tk.classList.remove('dash-skeleton'); tk.replaceChildren();
+    const tk = $('takeaway'); tk.classList.remove('loading'); tk.replaceChildren();
     const B = (s) => { const b = document.createElement('b'); b.textContent = s; return b; };
     const T = (s) => document.createTextNode(s);
     if (res.firr == null) tk.append(T('In your case the plant never earns back what it costs to build, and is worth '), B(fmtM(res.npv)), T(' today at a '), B(fmtPct(res.wacc)), T(' cost of capital.'));
@@ -710,7 +706,7 @@ dash.calc('page_check', {
     const pill = $('verdict-pill'); pill.className = 'bx-pill ' + (res.npv > 0 ? 'ok' : 'bad');
     pill.textContent = res.npv > 0 ? 'Clears the hurdle' : 'Falls short';
 
-    // charts on the dashboard and in the pack (only the ones on screen are drawn)
+    // charts on the overview and in the detail views (only the ones on screen are drawn)
     drawCum($('cum-chart'), res, false);
     legend($('cum-legend'), [{ name: 'Cash in', color: 'var(--moss)' }, { name: 'Cash out', color: 'var(--rust)' }, ...(refCum ? [{ name: 'Report case', color: 'var(--ember)' }] : [])]);
     const pr = drawPrice($('price-chart'), firstDraw);
@@ -771,7 +767,7 @@ dash.calc('page_check', {
                       be_credit: (v) => '$' + v.toFixed(2), be_feed: (v) => '$' + v.toFixed(2) };
 
   window.addEventListener('resize', () => { fit(); update(); });
-  // Redraw when a chart's box changes size (fonts arriving, window height, opening the pack)
+  // Redraw when a chart's box changes size (fonts arriving, window height, switching views)
   let raf = 0; const sizes = new Map();
   const ro = new ResizeObserver((entries) => {
     let changed = false;
@@ -780,9 +776,9 @@ dash.calc('page_check', {
   });
   ['cum-chart', 'price-chart', 'cum-chart-big', 'price-chart-big'].forEach((id) => ro.observe($(id)));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fit(); update(); });
-  dash.onData(() => {
+  app.onData(() => {
     fit();
-    const inp = dash.data('inputs'), mr = dash.data('model_results'), cf = dash.data('cash_flow'), pc = dash.data('page_check');
+    const inp = app.data('inputs'), mr = app.data('model_results'), cf = app.data('cash_flow'), pc = app.data('model_check');
     if (mr.status === 'ok') {
       refRows = Object.fromEntries(mr.data.map((r) => [r.metric, Number(r.value)]));
       $('r-firr').textContent = fmtPct(refRows.firr); $('r-npv').textContent = fmtM(refRows.npv);
