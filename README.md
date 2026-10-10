@@ -60,14 +60,14 @@ The model reproduces two figures from the source study: full-capacity biochar ou
 ├── report/
 │   ├── charts.py       Builds the data charts from outputs/results.json
 │   ├── diagrams.py     Builds the process flow, results chain, timeline and cover art
-│   ├── build.py        Rebuilds a plain-layout PDF from the model (HTML and CSS rendered by Chromium)
+│   ├── build.py        Builds the report PDF from the model (HTML and CSS rendered by Chromium)
 │   ├── style.css       Report design
 │   └── fig/            Generated figures (SVG)
 ├── docs/
 │   ├── index.html      The Investment Explorer (live dashboard, served by GitHub Pages)
 │   ├── fonts/, d3.min.js, fonts.css   Files the dashboard loads
 │   └── images/         PNG previews used in this README and the link preview
-├── run_all.py          Rebuilds everything in one command
+├── run_all.py          Runs the model, figures and report in one command
 └── requirements.txt
 ```
 
@@ -81,9 +81,9 @@ python -m playwright install chromium
 python run_all.py
 ```
 
-The run takes under a minute. It rewrites `outputs/` and `report/fig/`, and writes a plain-layout rebuild of the report to `report/rebuild/`. The final designed report in the repository root is never overwritten. To test a different case, change a value in `model/inputs.csv` and run again.
+The run takes under a minute. It rewrites `outputs/` and `report/fig/`, and writes the report PDF to `report/rebuild/`. To test a different case, change a value in `model/inputs.csv` and run again.
 
-The report is set in Source Sans 3 (text, tables and charts) and Merriweather (headings and key figures), both free from Google Fonts. They replace Inter and Lora, so the report uses the typefaces found in public-sector and development-finance reports rather than those common in AI-generated documents. Install both for a rebuild to match the published version.
+The report is set in Source Sans 3 (text, tables and charts) and Merriweather (headings and key figures), both free from Google Fonts.
 
 ## Method in brief
 
